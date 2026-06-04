@@ -54,6 +54,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     Leaderboards
                   </Link>
                   <Link
+                    href="/trust"
+                    className="text-ink-600 normal-case tracking-normal hover:text-ink-900"
+                  >
+                    Trust
+                  </Link>
+                  <Link
                     href="/search"
                     className="text-ink-600 normal-case tracking-normal hover:text-ink-900"
                   >
@@ -70,6 +76,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     className="text-ink-600 normal-case tracking-normal hover:text-ink-900"
                   >
                     Discovery gaps
+                  </Link>
+                  <Link
+                    href="/submit-agent"
+                    className="text-ink-600 normal-case tracking-normal hover:text-ink-900"
+                  >
+                    Submit agent
                   </Link>
                 </div>
                 {/* Resolves at request time via apiBaseUrl(); previously

@@ -11,8 +11,21 @@ from planmyagents_api.benchmark.models import FieldScore, ProviderResponse, Scor
 UNKNOWN_MARKERS = {"unknown", "not_found", "not found", "no_match", "no match", "none", "null"}
 
 
-def score_response(test_case: TestCase, response: ProviderResponse) -> ScoreResult:
-    """Score a provider response against a benchmark test case."""
+def score_response(
+    test_case: TestCase,
+    response: ProviderResponse,
+    *,
+    judge: Any = None,
+) -> ScoreResult:
+    """Score a provider response against a benchmark test case.
+
+    ``judge`` (optional) is an Eval_Framework judge with a
+    ``score_test_case(test_case, response) -> ScoreResult`` method. It is
+    invoked ONLY when ``test_case.expected`` declares a ``rubric_version``
+    (i.e. the case opts into rubric scoring). Exact-match cases never touch
+    the judge, preserving determinism and the existing behaviour for every
+    current caller (which passes no judge).
+    """
 
     if not response.succeeded:
         return ScoreResult(
@@ -24,6 +37,19 @@ def score_response(test_case: TestCase, response: ProviderResponse) -> ScoreResu
 
     actual = response.output or {}
     expected = test_case.expected
+
+    # Rubric-scored case: delegate to the judge when one is supplied. When a
+    # rubric case is declared but no judge is wired, fail closed with a clear
+    # reason rather than silently scoring it as exact-match.
+    if expected.get("rubric_version") is not None:
+        if judge is None:
+            return ScoreResult(
+                quality_score=0.0,
+                succeeded=False,
+                field_scores=[],
+                reason="rubric_case_requires_judge_but_none_supplied",
+            )
+        return judge.score_test_case(test_case, response)
 
     if expected.get("must_indicate_unknown") is True:
         return _score_unknown_expected(test_case, actual)

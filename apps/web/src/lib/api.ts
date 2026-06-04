@@ -306,6 +306,58 @@ export const fetchLeaderboards = (): Promise<LeaderboardIndexResponse> =>
 export const fetchLeaderboard = (capability: string): Promise<LeaderboardResponse> =>
   get(`/leaderboards/${encodeURIComponent(capability)}`);
 
+// ===========================================================================
+// Eval methodology (/eval/methodology) — backs the public /trust page.
+//
+// Read-only projection of the Eval_Framework: the cheapest-first tier
+// ladder, the per-protocol invocation maturity, the ranking-source
+// taxonomy, and the LIVE per-capability credibility histogram. Every
+// value is derived from backend code that already governs behaviour, so
+// the page can never claim a tier/protocol/source the framework does not
+// implement.
+// ===========================================================================
+
+export type EvalTierInfo = {
+  id: string;
+  rank: number;
+  label: string;
+  description: string;
+  credibility_band: CredibilityStatus | string;
+};
+
+export type EvalProtocolInfo = {
+  protocol: string;
+  maturity: "executable" | "refusal_only" | "planned" | string;
+  can_invoke: boolean;
+  note: string;
+};
+
+export type EvalSourceInfo = {
+  source: string;
+  is_real: boolean;
+  description: string;
+};
+
+export type CredibilityDistributionEntry = {
+  status: CredibilityStatus | string;
+  count: number;
+};
+
+export type EvalMethodologyResponse = {
+  tiers: EvalTierInfo[];
+  protocols: EvalProtocolInfo[];
+  sources: EvalSourceInfo[];
+  scoring_methods: string[];
+  real_eval_sources: string[];
+  credibility_distribution: CredibilityDistributionEntry[];
+  total_capabilities: number;
+  real_run_capabilities: number;
+  spec_reference: string;
+};
+
+export const fetchEvalMethodology = (): Promise<EvalMethodologyResponse> =>
+  get("/eval/methodology");
+
 export type ApiWithoutAgent = {
   provider_id: string;
   display_name: string;

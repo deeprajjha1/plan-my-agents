@@ -79,7 +79,11 @@ export default function GoalPage() {
         <p className="mt-2 max-w-3xl text-sm text-ink-600">
           PlanMyAgents plans the required capabilities, routes through tested
           and runnable providers when one exists, and refuses honestly when
-          nothing is ready yet. Browse{" "}
+          nothing is ready yet. See{" "}
+          <Link href="/trust" className="text-accent-600 hover:underline">
+            how we evaluate agents
+          </Link>
+          , or browse{" "}
           <Link
             href="/categories"
             className="text-accent-600 hover:underline"

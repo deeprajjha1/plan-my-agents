@@ -85,7 +85,7 @@ test.describe("sprint-pitch-align P4 flows", () => {
       "xpath=ancestor::section[1]",
     );
     await expect(verifySection).toContainText(
-      /(Raw lead|provider_evidence_missing|evidence_fetch_failed|capability_verified|No verification checks recorded yet)/,
+      /(Raw lead|provider_evidence_missing|evidence_fetch_failed|Tested by PlanMyAgents|capability_verified|No verification checks recorded yet)/,
     );
 
     await expect(

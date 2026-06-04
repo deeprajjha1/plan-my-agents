@@ -46,9 +46,23 @@
 
 **The wedge** is developer agent workflows — densest MCP/A2A supply, fastest validation, viral via dev communities — followed by GTM data workflows and then horizontal expansion.
 
-**The moat** is six compounding assets: discovery freshness × verification evidence × benchmark history × refusal demand data × **marketplace network effects** × **Tier‑1 partnership distribution**.
+**The moat** is six compounding assets: discovery freshness × verification evidence × benchmark history × refusal demand data × **marketplace network effects** × **Tier‑1 partnership distribution**. Today, three of these are real (discovery freshness, verification evidence, refusal demand data); benchmark history is the asset we are building — the engine and credibility classifier exist, but no discovered agent has been scored end‑to‑end yet (see status note below). The marketplace and partnership assets are Phase 2/3.
 
-**The ask.** $3–5M seed funds 18 months of: shipping recipe export, reaching 25K weekly active developers, signing **Tier‑1 partnerships with n8n + Cursor + Anthropic** (distribution + dev mindshare + protocol authority), running a parallel **founding marketplace cohort workstream** to land 5–10 paying vendors with first 3 publishable Verified Benchmarks, closing 3 enterprise design partners, and reaching $50K MRR — the Series A gate.
+> **Honest status note (read before any benchmark/trust claim).** The
+> benchmark *engine* (runner, field‑weighted scorer, per‑capability
+> rankings, and a conservative credibility classifier) is built and
+> tested. What it has scored so far are *baseline* wrappers around
+> commodity APIs (Razorpay live; Resend/Firecrawl fixture‑backed) plus
+> mock adapters — none of which is a *discovered agent*, and the
+> baselines are deliberately firewalled out of user‑facing routing. The
+> credibility classifier therefore reports the public leaderboards as
+> `synthetic_only` today. "Benchmarked routing of discovered agents" is
+> the central roadmap item this raise funds, not a present capability.
+> The BYO‑credentials sandbox that the optional execution fee (tier 8)
+> depends on is currently a seeded stub. Full detail:
+> `docs/honest-scope-audit.md`.
+
+**The ask.** $3–5M seed funds 18 months of: shipping recipe export, reaching 25K weekly active developers, **closing the discovered‑agent benchmark loop so the first capabilities pass the credibility classifier's `developing`/`publishable` bar**, signing **Tier‑1 partnerships with n8n + Cursor + Anthropic** (distribution + dev mindshare + protocol authority), running a parallel **founding marketplace cohort workstream** to land 5–10 paying vendors with the first 3 publishable Verified Benchmarks, closing 3 enterprise design partners, and reaching $50K MRR — the Series A gate.
 
 **Anti‑pitch.** We are *not* Zapier for agents — we partner with Zapier and n8n, we don't compete on connector count. We are *not* an executor with stored credentials — we never hold customer keys. We are *not* a pay‑to‑rank marketplace — vendors pay for visibility, never for ranking position. We do, in Phase 2, offer an **optional 1–2% vendor‑opt‑in execution fee** (Amazon Associates–style attribution, paid by the vendor out of their margin, user price never changes, capped at 2%, decoupled from ranking) — this is a vendor‑side attribution mechanism, not a universal take rate. The first two anti‑positions remove the connector‑arms‑race trap; the third (with the execution‑fee cap) is the trust firewall that makes us defensible as we scale.
 
@@ -227,16 +241,22 @@ OEM + enterprise + standards. Distribution becomes the moat.
 
 ### 4.4 Optional execution — BYO‑credentials sandbox (across all phases)
 
-A user can choose to execute a recipe step from within the PlanMyAgents UI rather than copying it to their LLM host. **Constraints:**
+> **Build status:** seeded stub today. `agents/sandbox_runner.py` defines
+> the contract and raises `SandboxNotYetWiredError`; the live
+> `/sandbox/execute` path is scheduled work, not shipped. Tier‑8 revenue
+> and the "collect benchmark data on real workflows" mechanism both
+> depend on this path and are gated on it being built.
+
+A user can choose to execute a recipe step from within the PlanMyAgents UI rather than copying it to their LLM host. **Constraints (the contract the wired version must honor):**
 
 - Credentials live in user's browser session only (never persisted server‑side)
-- Execution goes through `GenericProtocolAdapter` for MCP / A2A / OpenAPI only
+- Execution goes through `GenericProtocolAdapter` for MCP / A2A / OpenAPI only (A2A and free‑form AI‑agent invocation are honest refusals until those wire formats stabilize; MCP and OpenAPI are the executable surfaces)
 - No hand‑coded vendor wrappers
 - Cost cap enforced per session via `spend_ledger.py`
 - Every call audited; no telemetry data flows back to vendors
 - Gated by env var (off by default in production until trust review)
 
-**Why this matters:** lets us collect benchmark data on real workflows without becoming an executor. The user is always in the driver seat.
+**Why this matters:** once wired, it lets us collect benchmark data on real workflows without becoming an executor, and it is the path by which a discovered MCP agent gets executed against benchmark cases. The user is always in the driver seat.
 
 ---
 
@@ -280,10 +300,10 @@ Each tier unlocks **after** the previous one has proof. We do not ship all nine 
 |---|---|---|---|---|
 | **0** | Free | Discovery search, basic recipe, public leaderboards | Day 1 | $0 (acquisition + brand) |
 | **1** | Pro | Saved recipes, teams, private notes, recipe versioning, freshness alerts, watchlists | 10K weekly active developers | $20–50 / user / mo |
-| **2** | Benchmark API | Programmatic ranking + benchmark data | 3+ publishable benchmark cells | $500–5K / mo |
+| **2** | Benchmark API | Programmatic ranking + benchmark data | 3+ publishable benchmark cells (today: **0** — gated on closing the discovered‑agent benchmark loop) | $500–5K / mo |
 | **3** | Enterprise registry | Private registry, on‑prem, governance, SLA, audit, SSO | 3+ design partners | $50K–500K / yr |
 | **4** | **Claimed Vendor Profile** | Vendor‑edit access; analytics; community response | 50+ verified agentic candidates per category | $500–2K / yr per vendor |
-| **5** | **Verified Benchmark Badge** | Extended ≥250‑sample run; published result whatever it is | 1+ publishable benchmark cell live | $5–50K / cycle per vendor |
+| **5** | **Verified Benchmark Badge** | Extended ≥250‑sample run; published result whatever it is | 1+ publishable benchmark cell live (today: **0** — same gate as tier 2) | $5–50K / cycle per vendor |
 | **6** | **Sponsored Category Placement** | Category page sponsored slot (disclosed) | 25K+ WAU | $10–100K / qtr per vendor |
 | **7** | **Demand‑Data API** | Vendor pulls "what users are asking for that no agent fulfills" | 100K+ goal queries/mo | $10–50K / yr per vendor |
 | **8** | **Optional Execution Fee** *(vendor‑opt‑in)* | 1–2% on calls flowing through our BYO‑credentials sandbox to a vendor that has opted in. Vendor pays out of their own margin; user price never changes; capped at 2%; decoupled from ranking; vendor benefits = execution attribution analytics + sponsored eligibility + co‑marketing rights | BYO‑creds sandbox GA + 5+ paying vendors on tiers 4–6 | 1–2% per sandboxed call (vendor‑borne); typical vendor MRR $1–25K |

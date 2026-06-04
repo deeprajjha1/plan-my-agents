@@ -20,6 +20,6 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.ruff.lint.per-file-ignores]
 "apps/api/tests/*.py" = ["E402"]
-"scripts/*.py" = ["E402"]
-"scripts/serve_demo.py" = ["E501"]
+"scripts/**/*.py" = ["E402"]
+"scripts/dev/serve_demo.py" = ["E501"]
 

@@ -4,7 +4,64 @@
 > and why. This file separates local prototype milestones from production-grade
 > phases so progress is not misleading.
 
-Last updated: 2026-05-11 (late evening — DB schema split: agentic rows, APIs without agents, capability demand events, and discovery run audit log are now four physically separate tables with a routing storage facade and an idempotent backfill path)
+Last updated: 2026-06-04 (Eval_Framework UI surfaces `/trust` + `/submit-agent` — see notes below + `docs/honest-scope-audit.md`)
+
+> **2026-06-03 milestone reframe (the spine for the current sprint).**
+> An engineering audit (`docs/honest-scope-audit.md`) found the gap between
+> "benchmarked routing layer" as claimed and as built. The benchmark
+> *engine* (runner, scorer, per-capability rankings, credibility classifier)
+> is real and tested, but **no discovered agent has been scored end-to-end
+> and persisted into the ranking store**. The only cells that ever reached
+> the store are mock (`email_verification`, `contact_enrichment`) and
+> hand-coded API baselines (Razorpay live; Resend/Firecrawl fixture) — and
+> the baselines are firewalled out of routing by design. The credibility
+> classifier therefore reports the public leaderboards as `synthetic_only`.
+>
+> Reposition (not descope): "benchmarked routing of discovered agents"
+> stays the moat, but moves from implied-done to the **explicit, top-priority
+> Phase-2 unlock this raise funds**. The first deliverable is a single *real
+> cell*: execute a discovered MCP server (generic MCP adapter, behind the
+> sandbox) against benchmark cases, score it, persist it, and let the
+> classifier promote that capability past `synthetic_only`. Until that lands,
+> no surface may claim more than `synthetic_only` warrants (AGENTS.md Hard
+> Rule #1). README, PITCH_DECK, and BUSINESS_PLAN have been corrected to
+> match; this note is the milestone-level record of why.
+
+> **2026-06-04 — agent-card ingestion shipped; A2A quality attestation
+> blocked-on-invocation.** Users/vendors can now submit an Agent Card URL for
+> any domain (`make card-ingest CARD_URL=...`); the platform resolves it,
+> runs existence + claim verification (reusing `verify_candidate`), and
+> indexes the agent capped at claim-level trust (`benchmark_status` stays
+> `not_started`, non-routable). This is registration/resolution, not a
+> crawler — discovering unknown agents on unknown domains stays out of scope.
+> A2A **quality** attestation remains blocked until A2A invocation is wired
+> into `agents/protocol.py`; `CardIngestionService.attest_quality(...)`
+> returns `blocked_on_invocation` (`source="refused"`, non-real to the
+> credibility classifier) and will route through the `EvalFramework` once the
+> A2A invocation surface exists. Spec: `.kiro/specs/agent-card-ingestion/`.
+> Detail: `docs/honest-scope-audit.md` addendum.
+
+> **2026-06-04 — Eval_Framework made visible: `/trust` + `/submit-agent`
+> surfaces.** The eval framework was the asset the business plan calls the
+> moat, yet it had **zero UI** — it lived entirely in CLI/cron jobs and only
+> showed up indirectly as leaderboard numbers. Added a read-only
+> `GET /eval/methodology` endpoint (`web/routes/eval.py`) that is a pure
+> projection of code that already governs behaviour: the cheapest-first tier
+> ladder (`eval.models.EvalTier`), the per-protocol invocation maturity
+> registry (`eval.protocols.default_registry` — MCP/OpenAPI executable;
+> A2A/ai_agent verification-only; ACP/ANP planned), the ranking-source
+> taxonomy (`REAL_EVAL_SOURCES` vs `NON_REAL_EVAL_SOURCES`), and a **live**
+> per-capability credibility histogram computed from the same leaderboard
+> index `/leaderboards` reads. The new `/trust` page renders it and, per
+> AGENTS.md Hard Rule #1, shows the uncomfortable truth in red when every
+> cell is `synthetic_only` (today: 64/64, 0 real-run capabilities). The new
+> `/submit-agent` page honestly documents the `make card-ingest` CLI pipeline
+> and its claim-level trust ceiling rather than faking a self-serve form that
+> POSTs nowhere. No new machinery, no new persisted state — integration only.
+> The Next.js dev/build scripts moved off `--turbopack` (native bindings are
+> blocked by system policy on the build host; webpack is the supported path).
+> Tests: `apps/api/tests/web/test_eval_methodology.py` (4) +
+> `apps/web/tests/e2e/trust-surface.spec.ts` (3). Full fast suite 1315→1319.
 
 ---
 
@@ -525,7 +582,10 @@ Pending:
 - Authentication if needed for pilots.
 - A `/goal` page in the Next.js UI once the FastAPI `/goal` route also
   executes (today it plans only).
-- Methodology, FAQ, and trust-narrative pages.
+- ~~Methodology, FAQ, and trust-narrative pages.~~ Methodology + trust
+  narrative shipped 2026-06-04 as `/trust` (live eval-ladder + protocol
+  maturity + credibility histogram) and `/submit-agent` (card-ingestion
+  explainer). FAQ still pending.
 
 Why first version is done:
 

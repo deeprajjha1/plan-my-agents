@@ -1,0 +1,68 @@
+# Rubric-scored reference cases for the open-ended capability
+# `return_policy_analysis` ("analyse seller return policies").
+#
+# These are the REFERENCE INPUTS that make a judgment-heavy capability
+# runnable: each case feeds a known seller-policy page to the agent, and the
+# Eval_Judge scores the agent's output against the per-case rubric_criteria.
+# `rubric_version` in `expected` routes scoring to the judge (see
+# benchmark/scoring.py::score_response). The reference inputs use RFC-2606
+# reserved / example domains so a live run never touches a real third party.
+#
+# This is the worked example proving the judge path runs end-to-end. To reach
+# the `publishable` credibility band a much larger curated reference set + a
+# passing judge-calibration gate (see the judge-calibration spec) are required;
+# this set is enough to demonstrate a real `judge`-sourced run.
+cases:
+  - id: rpa-standard-30day
+    capability: return_policy_analysis
+    difficulty: easy
+    inputs:
+      tool_name: analyze_return_policy
+      arguments:
+        url: "https://shop.example.com/returns"
+        policy_text: >
+          Returns accepted within 30 days of delivery. Items must be unworn
+          with tags attached. A 15% restocking fee applies to opened
+          electronics. Final-sale items are not returnable.
+    expected:
+      rubric_version: "rubric:return_policy_analysis:v1"
+      rubric_criteria:
+        - "Identifies the 30-day return window."
+        - "States the 15% restocking fee on opened electronics."
+        - "Flags final-sale items as non-returnable."
+        - "Notes the unworn / tags-attached condition requirement."
+
+  - id: rpa-no-returns
+    capability: return_policy_analysis
+    difficulty: medium
+    inputs:
+      tool_name: analyze_return_policy
+      arguments:
+        url: "https://store.example.org/policy"
+        policy_text: >
+          All sales are final. We do not accept returns or exchanges under
+          any circumstances.
+    expected:
+      rubric_version: "rubric:return_policy_analysis:v1"
+      rubric_criteria:
+        - "States that no returns or exchanges are accepted."
+        - "Does not invent a return window or fee that the policy does not contain."
+
+  - id: rpa-window-plus-exceptions
+    capability: return_policy_analysis
+    difficulty: hard
+    inputs:
+      tool_name: analyze_return_policy
+      arguments:
+        url: "https://www.example.net/help/returns"
+        policy_text: >
+          Standard items may be returned within 60 days for a full refund.
+          Perishable goods, gift cards, and personalized items are excluded.
+          Refunds are issued to the original payment method within 5-7
+          business days.
+    expected:
+      rubric_version: "rubric:return_policy_analysis:v1"
+      rubric_criteria:
+        - "Identifies the 60-day return window."
+        - "Lists the exclusions: perishable goods, gift cards, personalized items."
+        - "States refunds go to the original payment method in 5-7 business days."

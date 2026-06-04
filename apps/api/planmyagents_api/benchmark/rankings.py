@@ -48,6 +48,12 @@ class AgentRanking:
     source: str = "synthetic"
     rank: int = 0
     weights: dict[str, float] = field(default_factory=lambda: dict(COMPOSITE_WEIGHTS))
+    # Optional eval-framework provenance (case-set/ground-truth/agent
+    # versions, protocol + maturity, scoring method, fixtures). Defaults to
+    # an empty dict so every existing constructor, JSON round-trip, and test
+    # stays valid and the credibility classifier (which ignores it) is
+    # unaffected. Populated only by the Eval_Framework.
+    provenance: dict[str, Any] = field(default_factory=dict)
 
     def to_json(self) -> dict[str, Any]:
         return {
@@ -65,6 +71,7 @@ class AgentRanking:
             "source": self.source,
             "rank": self.rank,
             "weights": self.weights,
+            "provenance": dict(self.provenance),
         }
 
 
@@ -73,8 +80,14 @@ def compute_rankings(
     *,
     weights: dict[str, float] | None = None,
     source: str = "synthetic",
+    provenance: dict[str, Any] | None = None,
 ) -> list[AgentRanking]:
-    """Aggregate benchmark runs into per-(provider, capability) rankings."""
+    """Aggregate benchmark runs into per-(provider, capability) rankings.
+
+    ``provenance`` (optional) is attached verbatim to every produced ranking.
+    The Eval_Framework uses it to carry case-set / ground-truth / protocol
+    metadata; default callers leave it ``None`` and get an empty dict.
+    """
 
     if not runs:
         return []
@@ -91,6 +104,7 @@ def compute_rankings(
                 runs=capability_runs,
                 weights=weights or COMPOSITE_WEIGHTS,
                 source=source,
+                provenance=provenance or {},
             )
         )
     rankings.sort(key=lambda item: (item.capability, -item.composite_score, item.provider_id))
@@ -119,6 +133,7 @@ def _ranking_from_runs(
     runs: list[BenchmarkRun],
     weights: dict[str, float],
     source: str,
+    provenance: dict[str, Any] | None = None,
 ) -> AgentRanking:
     sample_size = len(runs)
     successes = sum(1 for run in runs if run.score.succeeded)
@@ -159,6 +174,7 @@ def _ranking_from_runs(
         benchmark_status="not_started",
         source=source,
         weights=dict(weights),
+        provenance=dict(provenance or {}),
     )
     return AgentRanking(
         **{

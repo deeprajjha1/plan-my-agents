@@ -175,3 +175,42 @@ export const credibilityTagClass = (status: string): string => {
       return "tag-neutral";
   }
 };
+
+/**
+ * Honest per-protocol invocation maturity, surfaced on the /trust page and
+ * the agent detail header. Mirrors `eval.protocols.ProtocolMaturity`:
+ *
+ * - `executable`   — stable wire format + an implemented invoker (MCP,
+ *   OpenAPI). We can run a real capability check today.
+ * - `refusal_only` — protocol recognised but no stable invocation surface
+ *   yet (A2A, free-form ai_agent). Verification-only until an invoker ships.
+ * - `planned`      — recognised, not yet implemented (ACP, ANP).
+ *
+ * Colour story matches the trust ladder: green = we can prove it, amber =
+ * we can only see it, neutral = roadmap.
+ */
+export const protocolMaturityLabel = (maturity: string): string => {
+  switch (maturity) {
+    case "executable":
+      return "Executable";
+    case "refusal_only":
+      return "Verification-only";
+    case "planned":
+      return "Planned";
+    default:
+      return maturity || "Unknown";
+  }
+};
+
+export const protocolMaturityTagClass = (maturity: string): string => {
+  switch (maturity) {
+    case "executable":
+      return "tag-success";
+    case "refusal_only":
+      return "tag-warn";
+    case "planned":
+      return "tag-neutral";
+    default:
+      return "tag-neutral";
+  }
+};

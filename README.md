@@ -10,7 +10,9 @@ We are **G2 + Hugging Face + Gartner Digital Markets** for the agent economy.
 
 ## One‑line positioning
 
-> *"Tell us what you want done. We tell you which AI agents are known, tested, and runnable for each sub-task, hand you an honest recipe, and refuse with reasons when the evidence is not good enough."*
+> *"Tell us what you want done. We tell you which AI agents are known and verified for each sub-task, hand you an honest recipe, and refuse with reasons when the evidence is not good enough."*
+
+> **Status honesty:** "verified" today means discovered + evidence-laddered (incl. MCP `tools/list` probe), not yet performance-benchmarked. Independent benchmarking of discovered agents is the engine we are building, not a shipped capability — see [`docs/honest-scope-audit.md`](docs/honest-scope-audit.md).
 
 ---
 
@@ -22,7 +24,7 @@ PlanMyAgents fills that void as a three‑phase product:
 
 | Phase | What we do | Who it's for | Status |
 |---|---|---|---|
-| **1 — Plan + Discover + Recipe** | Decompose goals into sub‑tasks, discover candidate providers, rank with evidence, export recipes when steps are actually exportable, and refuse honestly when gates fail | Developers, operators, anyone using LLM hosts | Shipping now; execution is gated |
+| **1 — Plan + Discover + Recipe** | Decompose goals into sub‑tasks, discover candidate providers, rank with evidence, export recipes when steps are actually exportable, and refuse honestly when gates fail | Developers, operators, anyone using LLM hosts | Shipping now; execution gated; discovered‑agent benchmarking in progress |
 | **2 — Marketplace** | Vendors claim their listings, get tested benchmarks, run sponsored category placements (with full disclosure), pay for demand‑data API | Agent vendors (Apollo, Hunter, Perplexity, Linkup, Apify, etc.) | Year 1 unlock |
 | **3 — Partnership Platform** | OEM into n8n / Zapier / Claude Desktop / Cursor / Cline; enterprise private registries; standards influence | Workflow tools, LLM hosts, cloud platforms, enterprise teams | 🟡 Year 2 unlock |
 
@@ -119,18 +121,21 @@ Working prototype with 1,200+ backend tests passing. Pre‑revenue, pre‑incorp
 
 | Layer | Status |
 |---|---|
-| Discovery scouts (Smithery, MCP Marketplace, Glama, official MCP Registry, npm registry, GitHub code search, GitHub recently-pushed, GitHub awesome-lists, APIs.guru, Brave/Tavily, A2A directories, vendor docs, Hacker News, Moltbook, AI directories, curated JSON) | ✅ Implemented |
+| Discovery scouts (17 wired: Smithery, MCP Marketplace, Glama, official MCP Registry, npm registry, GitHub code search, GitHub recently-pushed, GitHub awesome-lists, APIs.guru, A2A directories, vendor docs, Hacker News, Moltbook, AI directories, curated JSON) | ✅ Implemented — note: 5 scouts are key-gated (GitHub/Smithery/Moltbook) and skip without keys; Brave/Tavily web-search wrappers exist but are not wired into the fleet |
 | Discovery store (Postgres + pgvector, 4 physically separate tables) | ✅ Implemented |
 | Goal decomposer + capability descriptions catalog | ✅ Implemented |
-| Embedding pipeline (OpenAI / Ollama / deterministic‑hash) | ✅ Implemented |
+| Embedding pipeline (OpenAI / Ollama / deterministic‑hash) | ✅ Implemented — default is deterministic‑hash; semantic recall needs Ollama/OpenAI configured, and query‑time vector search engages only on the Postgres store |
 | Capability index + label reconciler | ✅ Implemented |
 | Verification tier ladder + qualification gate | ✅ Implemented |
 | LLM candidate judge | ✅ Implemented |
 | Per‑capability provider partition | ✅ Implemented |
 | Pre‑plan discovery + post‑goal refresh + MCP tool probe | ✅ Implemented |
-| Generic protocol adapters (BYO‑credentials gated) | ✅ Implemented |
+| Generic protocol adapters (BYO‑credentials gated) | 🟡 MCP + OpenAPI invocation implemented but gated off by default; A2A + free‑form AI‑agent are honest refusals (wire formats unstable) |
 | Cost cap + spend ledger | ✅ Implemented |
-| Public leaderboards UI + `/open-mcp-opportunities` | ✅ Implemented |
+| Public leaderboards UI + `/open-mcp-opportunities` | ✅ Implemented (UI + gap surface) |
+| **Benchmark engine (runner + scorer + rankings + credibility classifier)** | ✅ Implemented |
+| **Real benchmark cells for *discovered agents*** | 🔴 Not yet — only baseline‑API and mock cells exist; classifier reports leaderboards `synthetic_only`. Closing this loop is the seed‑funded milestone (see `docs/honest-scope-audit.md`) |
+| BYO‑credentials sandbox runner (`/sandbox/execute`) | 🔴 Seeded stub (`SandboxNotYetWiredError`) |
 | Recipe export endpoint (Claude / n8n / Cursor / markdown) | 🟡 Q1 sprint |
 | Pro tier (saved recipes, teams) | 🟡 Q2 sprint |
 | **Vendor portal (claimed profiles, sponsored placement)** | 🟡 Year 1 end |

@@ -260,11 +260,27 @@ def classify_index(
     }
 
 
+# Sources the classifier MUST treat as non-real. The base set predates the
+# Eval_Framework; the eval-specific values are imported from the framework's
+# source taxonomy so the two never drift. Widening this deny-list is
+# monotonic — it can only ever make FEWER rankings count as real, never more
+# (the no-overclaim property), so it can never promote a cell's band.
+_BASE_NON_REAL_SOURCES = frozenset({"synthetic", "mock", "fixture", "stub"})
+
+
+def _non_real_sources() -> frozenset[str]:
+    try:
+        from planmyagents_api.eval.models import NON_REAL_EVAL_SOURCES
+    except ImportError:  # pragma: no cover - eval package always present in-tree
+        return _BASE_NON_REAL_SOURCES
+    return _BASE_NON_REAL_SOURCES | NON_REAL_EVAL_SOURCES
+
+
 def _is_real_run(row: dict[str, Any]) -> bool:
     source = str(row.get("source") or "").strip().lower()
     if not source:
         return False
-    if source in {"synthetic", "mock", "fixture", "stub"}:
+    if source in _non_real_sources():
         return False
     sample_size = int(row.get("sample_size") or 0)
     return sample_size > 0

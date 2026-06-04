@@ -507,6 +507,7 @@ def create_app() -> FastAPI:
     # cluster was the first because it has the lowest coupling.
     from planmyagents_api.web.routes import demand as _demand_routes
     from planmyagents_api.web.routes import discovery as _discovery_routes
+    from planmyagents_api.web.routes import eval as _eval_routes
     from planmyagents_api.web.routes import health as _health_routes
     from planmyagents_api.web.routes import leaderboards as _leaderboards_routes
 
@@ -519,6 +520,7 @@ def create_app() -> FastAPI:
     app.include_router(_discovery_routes.router)
     app.include_router(_leaderboards_routes.router)
     app.include_router(_demand_routes.router)
+    app.include_router(_eval_routes.router)
 
     # /discovery/{categories, agents, search, index-freshness} moved
     # to `planmyagents_api.web.routes.discovery` in the 2026-05-19

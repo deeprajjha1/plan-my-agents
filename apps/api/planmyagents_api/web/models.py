@@ -372,3 +372,70 @@ class LeaderboardIndexEntry(BaseModel):
 
 class LeaderboardIndexResponse(BaseModel):
     capabilities: list[LeaderboardIndexEntry]
+
+
+# ---------------------------------------------------------------------------
+# Eval methodology surface (/eval/methodology)
+# ---------------------------------------------------------------------------
+#
+# Read-only window onto the Eval_Framework so the public UI can explain HOW a
+# leaderboard number came to exist — and, more importantly, why most cells are
+# verification-only today. Every field here is derived from code that already
+# exists (eval.models.EvalTier, eval.protocols.default_registry,
+# eval.models.{REAL,NON_REAL}_EVAL_SOURCES, benchmark.credibility) so the page
+# can never claim a tier/protocol/source the framework does not actually
+# implement. No new machinery, no persisted state of its own.
+
+
+class EvalTierModel(BaseModel):
+    """One rung of the cheapest-first evaluation ladder."""
+
+    id: str
+    rank: int
+    label: str
+    description: str
+    credibility_band: str = Field(
+        description="The credibility status this tier maps onto.",
+    )
+
+
+class EvalProtocolModel(BaseModel):
+    """Honest per-protocol invocation maturity."""
+
+    protocol: str
+    maturity: str = Field(description="executable | refusal_only | planned")
+    can_invoke: bool
+    note: str
+
+
+class EvalSourceModel(BaseModel):
+    """A ranking ``source`` value and whether credibility treats it as real."""
+
+    source: str
+    is_real: bool
+    description: str
+
+
+class CredibilityDistributionEntry(BaseModel):
+    status: str
+    count: int
+
+
+class EvalMethodologyResponse(BaseModel):
+    """Self-describing methodology payload for the public trust page.
+
+    The counts under ``credibility_distribution`` are live (computed from the
+    same leaderboard index the /leaderboards page renders), so the page shows
+    the real shape of the index — including the uncomfortable truth that today
+    most cells are ``synthetic_only``.
+    """
+
+    tiers: list[EvalTierModel]
+    protocols: list[EvalProtocolModel]
+    sources: list[EvalSourceModel]
+    scoring_methods: list[str]
+    real_eval_sources: list[str]
+    credibility_distribution: list[CredibilityDistributionEntry]
+    total_capabilities: int
+    real_run_capabilities: int
+    spec_reference: str

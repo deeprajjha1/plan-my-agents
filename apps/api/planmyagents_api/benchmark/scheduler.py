@@ -101,7 +101,18 @@ class SchedulerReport:
 
 @dataclass
 class BenchmarkScheduler:
-    """Run benchmarks for selected discovery candidates."""
+    """Run benchmarks for selected discovery candidates.
+
+    Two modes:
+
+    * ``run()`` — the original baseline-adapter path (unchanged). Used by
+      ``make benchmark-schedule`` / ``benchmark-cron``.
+    * ``run_eval()`` — the Eval_Framework path. Evaluates discovered
+      *agentic* candidates (mcp_server / a2a_agent / ai_agent) through the
+      ``EvalFramework`` instead of skipping them as ``protocol_beta``, and
+      persists the real runs + rankings the framework produces. Requires an
+      ``eval_framework`` to be supplied.
+    """
 
     benchmarks_dir: Path
     discovery_store: DiscoveryStore
@@ -109,6 +120,7 @@ class BenchmarkScheduler:
     cases_per_capability: int = 20
     use_mock_fallback: bool = True
     adapter_resolver: AdapterFactory | None = None
+    eval_framework: object | None = None  # EvalFramework | None (avoid import cycle)
 
     def run(
         self,
@@ -156,6 +168,120 @@ class BenchmarkScheduler:
             candidates_updated=candidates_updated,
             summaries=summaries,
         )
+
+    def run_eval(
+        self,
+        *,
+        run_mode: object,  # EvalRunMode
+        candidate_ids: set[str] | None = None,
+        capabilities: set[str] | None = None,
+    ) -> SchedulerReport:
+        """Evaluate discovered agentic candidates via the Eval_Framework.
+
+        Per-candidate failure isolation is preserved exactly like ``run()``:
+        the framework's ``evaluate_cell`` never raises (it converts every
+        failure to a structured ``EvalResult``), and any unexpected error is
+        still caught here so one candidate cannot crash the batch.
+        """
+
+        if self.eval_framework is None:
+            raise ValueError("run_eval() requires an eval_framework to be set")
+
+        candidates = self.discovery_store.load()
+        selected = self._select_agentic_candidates(candidates, candidate_ids=candidate_ids)
+
+        all_runs: list[BenchmarkRun] = []
+        all_rankings: list[AgentRanking] = []
+        summaries: list[CandidateBenchmarkSummary] = []
+        new_status_by_id: dict[str, dict[str, str]] = {}
+
+        for candidate in selected:
+            for capability in self._capabilities_for(candidate, capabilities):
+                summary, runs, ranking = self._eval_one(
+                    candidate=candidate, capability=capability, run_mode=run_mode
+                )
+                summaries.append(summary)
+                if runs:
+                    all_runs.extend(runs)
+                if ranking is not None:
+                    all_rankings.append(ranking)
+                    new_status_by_id.setdefault(candidate.id, {})[
+                        capability
+                    ] = ranking.benchmark_status
+
+        if all_runs:
+            self.benchmark_store.save(all_runs)
+        if all_rankings:
+            self.benchmark_store.save_rankings(all_rankings)
+
+        candidates_updated = self._apply_status_updates(candidates, new_status_by_id)
+        return SchedulerReport(
+            benchmark_runs=len(all_runs),
+            rankings_updated=len(all_rankings),
+            candidates_updated=candidates_updated,
+            summaries=summaries,
+        )
+
+    def _eval_one(
+        self, *, candidate: DiscoveryCandidate, capability: str, run_mode: object
+    ) -> tuple[CandidateBenchmarkSummary, list[BenchmarkRun], AgentRanking | None]:
+        try:
+            result = self.eval_framework.evaluate_cell(  # type: ignore[attr-defined]
+                candidate=candidate, capability=capability, run_mode=run_mode
+            )
+        except Exception as exc:  # noqa: BLE001 — defence; framework shouldn't raise
+            return (
+                CandidateBenchmarkSummary(
+                    candidate_id=candidate.id,
+                    capability=capability,
+                    status="error",
+                    sample_size=0,
+                    success_rate=0.0,
+                    avg_quality_score=0.0,
+                    composite_score=0.0,
+                    benchmark_status=candidate.benchmark_status,
+                    adapter_module=candidate.adapter_module,
+                    source="refused",
+                    notes=[f"eval_error:{type(exc).__name__}:{exc}"],
+                ),
+                [],
+                None,
+            )
+
+        ranking = result.ranking
+        status = "ran" if result.is_real_run else "skipped_no_adapter"
+        return (
+            CandidateBenchmarkSummary(
+                candidate_id=candidate.id,
+                capability=capability,
+                status=status,
+                sample_size=result.sample_size,
+                success_rate=ranking.success_rate if ranking else 0.0,
+                avg_quality_score=ranking.avg_quality_score if ranking else 0.0,
+                composite_score=ranking.composite_score if ranking else 0.0,
+                benchmark_status=ranking.benchmark_status if ranking else candidate.benchmark_status,
+                adapter_module=candidate.adapter_module,
+                source=result.source,
+                notes=[result.reason] if result.reason else [],
+            ),
+            list(result.runs),
+            ranking if result.is_real_run else None,
+        )
+
+    def _select_agentic_candidates(
+        self,
+        candidates: list[DiscoveryCandidate],
+        *,
+        candidate_ids: set[str] | None,
+    ) -> list[DiscoveryCandidate]:
+        from planmyagents_api.discovery.constants import AGENTIC_PROVIDER_TYPES
+
+        pool = (
+            [c for c in candidates if c.id in candidate_ids]
+            if candidate_ids
+            else list(candidates)
+        )
+        return [c for c in pool if c.provider_type in AGENTIC_PROVIDER_TYPES]
 
     def _select_candidates(
         self,
