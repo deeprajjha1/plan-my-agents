@@ -1,0 +1,140 @@
+# Sprint 3a (S3a-2): hand-authored benchmark cases for the
+# email_send capability (Resend wrapper).
+#
+# All cases use Resend's documented synthetic test addresses
+# (`@resend.dev` domain) so a live run against the real Resend
+# API never touches a real inbox. The wrapper enforces this
+# boundary itself: real-domain senders are refused unless
+# RESEND_ALLOW_REAL_DOMAINS=true is set.
+#
+# Resend's POST /emails returns ``id`` for any accepted email;
+# delivery / bounce / complaint state arrives later via webhook.
+# At the wrapper level "queued with an id" IS the success state.
+# See: https://resend.com/docs/api-reference/emails/send-email
+
+cases:
+  - id: email-send-0001-basic-text-to-test-address
+    capability: email_send
+    difficulty: easy
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      from: onboarding@resend.dev
+      to: delivered@resend.dev
+      subject: PMA bench - basic delivery
+      text: This is a synthetic test email. Should never reach a real inbox.
+    expected:
+      status:
+        accept: ["queued"]
+        weight: 0.5
+      email_id:
+        format_check: "^[A-Za-z0-9-]{6,}$"
+        weight: 0.3
+      test_mode:
+        accept: [true]
+        weight: 0.2
+    notes: >
+      Smallest happy-path case. Single recipient, single text body,
+      Resend's owned sender. ``test_mode`` must be true because both
+      from and to live on @resend.dev — the wrapper's safety
+      heuristic for "this email cannot escape Resend's sandbox".
+
+  - id: email-send-0002-html-with-subject-and-recipient-list
+    capability: email_send
+    difficulty: easy
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      from: onboarding@resend.dev
+      to:
+        - delivered@resend.dev
+      subject: PMA bench - HTML body
+      html: "<p>Hello from PlanMyAgents</p>"
+    expected:
+      status:
+        accept: ["queued"]
+        weight: 0.6
+      email_id:
+        format_check: "^[A-Za-z0-9-]{6,}$"
+        weight: 0.4
+    notes: >
+      HTML body path. Recipient passed as a single-element list
+      to verify the wrapper handles both string and list shapes.
+
+  - id: email-send-0003-bounce-test-address
+    capability: email_send
+    difficulty: medium
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      from: onboarding@resend.dev
+      to: bounced@resend.dev
+      subject: PMA bench - synthetic bounce
+      text: This will trigger a synthetic bounce webhook.
+    expected:
+      status:
+        accept: ["queued"]
+        weight: 0.7
+      email_id:
+        format_check: "^[A-Za-z0-9-]{6,}$"
+        weight: 0.3
+    notes: >
+      The QUEUE step succeeds even for a bounce-tagged address —
+      Resend accepts the email and synthesises a bounce webhook
+      asynchronously. The wrapper's job ends at queue-time. A
+      wrapper that synchronously checks for "bounce" in the
+      address and pre-refuses would fail this case (and would be
+      wrong — Resend's contract is: accept all, report deliverability
+      via webhook).
+
+  - id: email-send-0004-complaint-test-address
+    capability: email_send
+    difficulty: medium
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      from: onboarding@resend.dev
+      to: complained@resend.dev
+      subject: PMA bench - synthetic complaint
+      text: This will trigger a synthetic complaint webhook.
+    expected:
+      status:
+        accept: ["queued"]
+        weight: 0.7
+      email_id:
+        format_check: "^[A-Za-z0-9-]{6,}$"
+        weight: 0.3
+    notes: >
+      Same pattern as the bounce case — queue succeeds; the
+      complaint state arrives via webhook later. Verifies the
+      wrapper doesn't treat any specific recipient as a
+      pre-failure signal.
+
+  - id: email-send-0005-adversarial-fake-id-claim
+    capability: email_send
+    difficulty: adversarial
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      from: onboarding@resend.dev
+      to: delivered@resend.dev
+      subject: PMA bench - adversarial id check
+      text: This grades the wrapper's id-format honesty.
+    expected:
+      status:
+        accept: ["queued"]
+        weight: 0.5
+      email_id:
+        # Resend's ids are UUID-shaped. A wrapper that hallucinates
+        # ids ("not-real", "pending", static strings, etc.) fails
+        # this regex. The honest wrapper passes any 200 response's
+        # ``id`` through verbatim.
+        format_check: "^[A-Za-z0-9]{6,}-[A-Za-z0-9-]+$"
+        weight: 0.5
+    notes: >
+      Adversarial: catches wrappers that synthesise an id when
+      the underlying API call failed silently. Resend's real ids
+      contain at least one hyphen (UUID-shape ``xxxxxxxx-xxxx-...``);
+      a wrapper that returns a fake id like "queued" or "ok" will
+      fail the format_check. The honest wrapper must surface the
+      real id from the API response or refuse with succeeded=False.

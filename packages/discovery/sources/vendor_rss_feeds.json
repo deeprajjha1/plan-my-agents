@@ -1,0 +1,57 @@
+{
+  "_comment": "Curated event-driven discovery feeds. All verified live on 2026-05-11 with `curl -L --max-time 5`. Each entry: feed_url + role for human reviewers. Vendors without an RSS feed (Anthropic, Mistral) are intentionally NOT here — they get caught via the HN search feed and the per-subreddit feeds. To add a feed, run the probe loop in PR description and confirm 200.",
+  "feeds": [
+    {
+      "url": "https://openai.com/blog/rss.xml",
+      "role": "OpenAI product launches and blog posts (frontier vendor)"
+    },
+    {
+      "url": "https://blog.google/technology/ai/rss/",
+      "role": "Google AI product launches and Gemini news"
+    },
+    {
+      "url": "https://aws.amazon.com/blogs/machine-learning/feed/",
+      "role": "AWS Bedrock / Q / ML product launches"
+    },
+    {
+      "url": "https://blog.cloudflare.com/rss/",
+      "role": "Cloudflare AI / Workers AI / Agents launches"
+    },
+    {
+      "url": "https://huggingface.co/blog/feed.xml",
+      "role": "Hugging Face model + Spaces + agent launches"
+    },
+    {
+      "url": "https://blog.langchain.dev/rss/",
+      "role": "LangChain / LangGraph / LangSmith agent framework news"
+    },
+    {
+      "url": "https://www.together.ai/blog/rss.xml",
+      "role": "Together.ai inference + agent platform"
+    },
+    {
+      "url": "https://cohere.com/blog/rss.xml",
+      "role": "Cohere model + agent platform launches"
+    },
+    {
+      "url": "https://hnrss.org/newest?q=mcp+OR+%22model+context+protocol%22",
+      "role": "Hacker News search firehose for MCP-related posts (community + vendor)"
+    },
+    {
+      "url": "https://news.ycombinator.com/rss",
+      "role": "Hacker News front page (catches major launches that don't hit MCP keyword feed)"
+    },
+    {
+      "url": "https://www.reddit.com/r/LocalLLaMA/.rss",
+      "role": "r/LocalLLaMA — large community for open-weight model + agent launches"
+    },
+    {
+      "url": "https://www.reddit.com/r/mcp/.rss",
+      "role": "r/mcp — dedicated subreddit for Model Context Protocol"
+    },
+    {
+      "url": "https://www.reddit.com/r/AI_Agents/.rss",
+      "role": "r/AI_Agents — community for autonomous agent discussion"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+.git
+.venv
+.planmyagents_runs
+__pycache__
+*.pyc
+.pytest_cache
+node_modules
+apps/web/.next
+apps/web/node_modules
+.env
+.env.*
+*.tsbuildinfo

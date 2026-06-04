@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "description": "Behavior probes for generic planner/discovery/ranking/refusal behavior. These are not product routing rules.",
+  "scenarios": [
+    {
+      "id": "public_marketing_research",
+      "goal": "how to do marketing for my company reducemyemi.in?",
+      "capabilities": ["company_data_lookup", "semantic_search", "web_scraping"],
+      "top_n": 8,
+      "top_must_include_any": ["google-a2a-sales-agent", "google-a2a-research-agent", "mcp-brave-search"],
+      "top_must_exclude": ["mcp-postgres", "mcp-sqlite"]
+    },
+    {
+      "id": "internal_database_lookup",
+      "goal": "query my internal postgres database for company records and summarize revenue by segment",
+      "capabilities": ["company_data_lookup", "database_query", "structured_data_lookup"],
+      "top_n": 5,
+      "top_must_include_any": ["mcp-postgres"],
+      "top_must_exclude": []
+    },
+    {
+      "id": "travel_booking_discovery",
+      "goal": "find and book the cheapest flight from Bengaluru to San Francisco",
+      "capabilities": ["travel_search", "fare_comparison", "booking_execution", "payment_authorization"],
+      "top_n": 10,
+      "top_must_include_any": ["google-a2a-travel-planner", "google-a2a-airline-agent"],
+      "top_must_exclude": []
+    },
+    {
+      "id": "international_product_discovery",
+      "goal": "find sports shoes under a budget that can be delivered to another country",
+      "capabilities": ["product_search", "price_comparison", "shipping_quote", "cross_border_commerce"],
+      "top_n": 10,
+      "top_must_include_any": ["google-a2a-shopping-agent", "google-a2a-logistics-agent"],
+      "top_must_exclude": ["google-a2a-travel-planner", "duffel"]
+    },
+    {
+      "id": "healthcare_rescheduling_unknown",
+      "goal": "reschedule my hospital appointment for next week",
+      "capabilities": ["appointment_rescheduling", "calendar_access", "healthcare_portal_access"],
+      "top_n": 5,
+      "expect_no_results": true,
+      "top_must_exclude": ["mcp-postgres", "stripe-payments"]
+    },
+    {
+      "id": "impossible_goal_unknown",
+      "goal": "build a mars colony for me tomorrow",
+      "capabilities": ["mars_colony_construction"],
+      "top_n": 5,
+      "expect_no_results": true,
+      "top_must_exclude": ["hunter", "apollo", "mcp-postgres"]
+    }
+  ]
+}

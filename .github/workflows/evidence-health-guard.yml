@@ -1,0 +1,93 @@
+# sprint-pitch-align P3-5 — evidence-health regression guard.
+#
+# Fails the build on `main` when the live evidence cron has gone cold,
+# i.e. `benchmark_runs_24h` (or any other configured counter) drops to 0.
+# Without this guard the homepage strip can silently render zeros for a
+# week before anyone notices.
+#
+# Runs on:
+#   * every push to main (immediate signal that a merge broke the cron)
+#   * a daily cron at 06:00 UTC (catches scheduled-job failures that don't
+#     correspond to a code change — e.g. a vendor API rotation)
+#   * manual dispatch (so operators can re-run after they unbreak the cron)
+#
+# Behaviour:
+#   * Boots Postgres from infra/postgres/init/*.sql so the schema and the
+#     evidence_health view are present.
+#   * Loads the prod-DB snapshot via `make evidence-backfill` so the count
+#     reflects the same data the homepage would render.
+#   * Calls scripts/check_evidence_health.py with the minimum guarantees
+#     the deck promises.
+#
+# Operator runbook (when this turns red): docs/operations.md §"Evidence
+# health guard troubleshooting".
+
+name: evidence-health-guard
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: planmyagents
+          POSTGRES_PASSWORD: planmyagents
+          POSTGRES_DB: planmyagents
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U planmyagents"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      PLANMYAGENTS_DISCOVERY_STORE_URL: postgresql://planmyagents:planmyagents@localhost:5432/planmyagents
+      PLANMYAGENTS_BENCHMARK_STORE_URL: postgresql://planmyagents:planmyagents@localhost:5432/planmyagents
+      PLANMYAGENTS_VERIFICATION_STORE_URL: postgresql://planmyagents:planmyagents@localhost:5432/planmyagents
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Python deps
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -r requirements.txt
+
+      - name: Apply Postgres migrations (incl. evidence_health view)
+        run: .venv/bin/python scripts/apply_migrations.py --url "$PLANMYAGENTS_DISCOVERY_STORE_URL"
+
+      - name: Backfill the evidence store from agents.json + JSONL fixtures
+        run: .venv/bin/python scripts/backfill_evidence_store.py
+
+      - name: Re-run candidate verification so verification_records is fresh
+        run: .venv/bin/python scripts/verify_top_candidates.py --limit 10 || true
+
+      # Hard guard: a green push to main MUST leave at least one recent
+      # benchmark run, at least one verification record, and at least one
+      # routable cell visible to the homepage. These three numbers back the
+      # deck's "evidence-first" claim — if any drops to zero we want CI red,
+      # not the homepage white.
+      - name: Check /health/evidence minimums
+        run: |
+          .venv/bin/python scripts/check_evidence_health.py \
+            --main-only \
+            --min-benchmark-runs-total 1 \
+            --min-verification-records-total 1 \
+            --min-routable-cells 1

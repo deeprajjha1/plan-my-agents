@@ -1,0 +1,30 @@
+{"id": "g001", "goal": "verify these email addresses for a B2B outreach campaign", "expected_capabilities": ["email_verification"], "notes": "single-cap, plain English, registry-direct"}
+{"id": "g002", "goal": "find liquor stores near me in Bengaluru and compare alcohol prices", "expected_capabilities": ["store_locator", "price_comparison"], "notes": "multi-cap, geographic, paraphrase-heavy"}
+{"id": "g003", "goal": "scrape product reviews from amazon and analyse sentiment", "expected_capabilities": ["web_scraping"], "notes": "single-cap, common scraping framing"}
+{"id": "g004", "goal": "enrich these company names with industry, headcount, and HQ location", "expected_capabilities": ["company_data_lookup", "contact_enrichment"], "notes": "multi-cap, B2B sales workflow"}
+{"id": "g005", "goal": "search github for golang projects related to terraform", "expected_capabilities": ["code_search", "semantic_search"], "notes": "code-search slug, also general semantic"}
+{"id": "g006", "goal": "review this pull request for security vulnerabilities and style issues", "expected_capabilities": ["code_review"], "notes": "developer workflow, single cap"}
+{"id": "g007", "goal": "process a $42 stripe payment from a customer in India", "expected_capabilities": ["payment_authorization"], "notes": "transactional, geographic"}
+{"id": "g008", "goal": "summarise this 50-page legal contract for me", "expected_capabilities": ["text_summarization", "legal_document_review"], "notes": "multi-cap, doc workflow"}
+{"id": "g009", "goal": "translate these support tickets from spanish to english", "expected_capabilities": ["translation"], "notes": "single-cap, support workflow"}
+{"id": "g010", "goal": "transcribe this hour-long podcast episode about AI", "expected_capabilities": ["transcription"], "notes": "single-cap, media workflow"}
+{"id": "g011", "goal": "schedule a 30-min meeting with the engineering team next tuesday", "expected_capabilities": ["calendar_management"], "notes": "single-cap, productivity"}
+{"id": "g012", "goal": "send a follow-up email to all leads who didn't reply this week", "expected_capabilities": ["email_send", "crm_query"], "notes": "multi-cap, sales workflow"}
+{"id": "g013", "goal": "look up this customer's order history and outstanding tickets", "expected_capabilities": ["customer_support_lookup", "crm_query"], "notes": "multi-cap, support"}
+{"id": "g014", "goal": "generate an icon for my note-taking app", "expected_capabilities": ["image_generation"], "notes": "single-cap, creative"}
+{"id": "g015", "goal": "extract text from these scanned PDF invoices", "expected_capabilities": ["ocr", "file_operations"], "notes": "multi-cap, document processing"}
+{"id": "g016", "goal": "research the top 5 vendors of CRM software for SMBs", "expected_capabilities": ["general_research", "web_search"], "notes": "multi-cap, research workflow"}
+{"id": "g017", "goal": "browse this booking site, fill the form, and submit", "expected_capabilities": ["web_browsing"], "notes": "single-cap, automation"}
+{"id": "g018", "goal": "build a chart showing weekly active users for the last 90 days", "expected_capabilities": ["data_visualization"], "notes": "single-cap, analytics"}
+{"id": "g019", "goal": "find me 100 cars to buy for my top employees in bengaluru with discount", "expected_capabilities": ["price_comparison", "general_research"], "notes": "complex multi-step, conversational"}
+{"id": "g020", "goal": "compare prices of Tesla Model 3 across dealers in California", "expected_capabilities": ["price_comparison", "store_locator"], "notes": "multi-cap, e-commerce"}
+{"id": "g021", "goal": "verify that customer@example.com is a deliverable address", "expected_capabilities": ["email_verification"], "notes": "single-cap, terse phrasing"}
+{"id": "g022", "goal": "rename all .txt files in this folder to add date prefix", "expected_capabilities": ["file_operations"], "notes": "single-cap, automation"}
+{"id": "g023", "goal": "what's the latest news on stripe acquisitions", "expected_capabilities": ["web_search", "general_research"], "notes": "informational query"}
+{"id": "g024", "goal": "look up the GST and pan number for ACME Corp India", "expected_capabilities": ["company_data_lookup"], "notes": "single-cap, regulatory"}
+{"id": "g025", "goal": "check whether this stripe webhook signature is valid", "expected_capabilities": [], "notes": "OUT-OF-DOMAIN: code/cryptography, no agentic capability matches; useful negative example"}
+{"id": "g026", "goal": "compose a piano sonata in F minor for my grandmother's birthday", "expected_capabilities": [], "notes": "OUT-OF-DOMAIN: creative, no agentic capability; should not infer image_generation"}
+{"id": "g027", "goal": "diagnose why my dog isn't eating", "expected_capabilities": [], "notes": "OUT-OF-DOMAIN: domain expertise outside agent registry; useful negative"}
+{"id": "g028", "goal": "find an MCP server that can talk to my postgres database", "expected_capabilities": ["semantic_search", "code_search"], "notes": "meta-discovery query, looking for MCP servers"}
+{"id": "g029", "goal": "search for AI agents that can book flights worldwide", "expected_capabilities": ["semantic_search", "web_search"], "notes": "meta-discovery, no travel_search slug in registry"}
+{"id": "g030", "goal": "I want my agent to scrape competitor websites and email me a daily summary", "expected_capabilities": ["web_scraping", "text_summarization", "email_send"], "notes": "multi-cap workflow"}

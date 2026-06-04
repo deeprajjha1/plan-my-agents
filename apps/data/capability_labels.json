@@ -1,0 +1,154 @@
+[
+  {
+    "coined_at": "2026-05-13T11:17:07+00:00",
+    "coined_from_goal_hash": "2d22889116e86422",
+    "description": "Check the buyer's name against AML watchlists.",
+    "id": "aml_watchlist_screening",
+    "last_used_at": "2026-05-15T10:31:35+00:00",
+    "usage_count": 86
+  },
+  {
+    "coined_at": "2026-05-13T11:17:07+00:00",
+    "coined_from_goal_hash": "2d22889116e86422",
+    "description": "Validate the buyer's business license and registration.",
+    "id": "business_license_verification",
+    "last_used_at": "2026-05-15T10:31:31+00:00",
+    "usage_count": 43
+  },
+  {
+    "coined_at": "2026-05-13T11:16:45+00:00",
+    "coined_from_goal_hash": "39ae0f967fe50599",
+    "description": "Search for liquor stores in southern India",
+    "id": "business_search",
+    "last_used_at": "2026-05-15T10:33:48+00:00",
+    "usage_count": 247
+  },
+  {
+    "coined_at": "2026-05-15T05:45:16+00:00",
+    "coined_from_goal_hash": "26b317bc03659c08",
+    "description": "Determine the user's gift preferences for a 3-year-old",
+    "id": "conversational_gift_preferences",
+    "last_used_at": "2026-05-15T05:45:16+00:00",
+    "usage_count": 1
+  },
+  {
+    "coined_at": "2026-05-14T10:41:36+00:00",
+    "coined_from_goal_hash": "f4278da3be490374",
+    "description": "Filter search results to only include liquor stores",
+    "id": "filter_search_results",
+    "last_used_at": "2026-05-15T10:31:40+00:00",
+    "usage_count": 65
+  },
+  {
+    "coined_at": "2026-05-15T07:36:02+00:00",
+    "coined_from_goal_hash": "f4278da3be490374",
+    "description": "Geocode southern India to extract geographic coordinates",
+    "id": "geocode_region",
+    "last_used_at": "2026-05-15T10:31:40+00:00",
+    "usage_count": 25
+  },
+  {
+    "coined_at": "2026-05-13T12:16:19+00:00",
+    "coined_from_goal_hash": "0fc427bd313fe4c1",
+    "description": "Retrieve the user's identification documents and information",
+    "id": "identity_document_retrieval",
+    "last_used_at": "2026-05-15T10:31:35+00:00",
+    "usage_count": 34
+  },
+  {
+    "coined_at": "2026-05-13T11:17:07+00:00",
+    "coined_from_goal_hash": "2d22889116e86422",
+    "description": "Verify the buyer's identity through a reliable source.",
+    "id": "identity_verification",
+    "last_used_at": "2026-05-15T10:31:35+00:00",
+    "usage_count": 51
+  },
+  {
+    "coined_at": "2026-05-13T11:17:07+00:00",
+    "coined_from_goal_hash": "2d22889116e86422",
+    "description": "Provide a report summarizing the KYC AML check results.",
+    "id": "kyc_aml_reporting",
+    "last_used_at": "2026-05-15T10:31:35+00:00",
+    "usage_count": 86
+  },
+  {
+    "coined_at": "2026-05-13T11:17:07+00:00",
+    "coined_from_goal_hash": "2d22889116e86422",
+    "description": "Identify the required documents and information for KYC AML check in UAE.",
+    "id": "kyc_requirements_retrieval",
+    "last_used_at": "2026-05-15T10:31:31+00:00",
+    "usage_count": 70
+  },
+  {
+    "coined_at": "2026-05-13T11:17:16+00:00",
+    "coined_from_goal_hash": "4aaa4411fc8b774a",
+    "description": "Retrieve customer payment information to process the transaction.",
+    "id": "payment_information_retrieval",
+    "last_used_at": "2026-05-15T10:31:49+00:00",
+    "usage_count": 217
+  },
+  {
+    "coined_at": "2026-05-13T11:17:16+00:00",
+    "coined_from_goal_hash": "4aaa4411fc8b774a",
+    "description": "Process payment of 49.99 USD for premium subscription.",
+    "id": "payment_processing",
+    "last_used_at": "2026-05-15T10:33:48+00:00",
+    "usage_count": 233
+  },
+  {
+    "coined_at": "2026-05-13T11:16:41+00:00",
+    "coined_from_goal_hash": "39ae0f967fe50599",
+    "description": "Compare prices of liquor across stores",
+    "id": "price_analysis",
+    "last_used_at": "2026-05-15T07:28:07+00:00",
+    "usage_count": 137
+  },
+  {
+    "coined_at": "2026-05-15T07:28:24+00:00",
+    "coined_from_goal_hash": "39ae0f967fe50599",
+    "description": "Compare prices across stores",
+    "id": "price_comparison",
+    "last_used_at": "2026-05-15T10:33:48+00:00",
+    "usage_count": 40
+  },
+  {
+    "coined_at": "2026-05-14T12:21:40+00:00",
+    "coined_from_goal_hash": "39ae0f967fe50599",
+    "description": "Retrieve prices of liquor from each store",
+    "id": "price_information_retrieval",
+    "last_used_at": "2026-05-15T10:33:48+00:00",
+    "usage_count": 63
+  },
+  {
+    "coined_at": "2026-05-13T11:17:04+00:00",
+    "coined_from_goal_hash": "9dcfc99a697a4f73",
+    "description": "Find single malt offerings for each store",
+    "id": "product_catalog",
+    "last_used_at": "2026-05-15T10:31:28+00:00",
+    "usage_count": 61
+  },
+  {
+    "coined_at": "2026-05-13T11:17:16+00:00",
+    "coined_from_goal_hash": "4aaa4411fc8b774a",
+    "description": "Send receipt to customer for premium subscription purchase.",
+    "id": "send_receipt",
+    "last_used_at": "2026-05-15T10:31:49+00:00",
+    "usage_count": 152
+  },
+  {
+    "coined_at": "2026-05-13T11:36:43+00:00",
+    "coined_from_goal_hash": "f87cc89aec5bfee3",
+    "description": "Analyze the translated Mandarin text (or original English text) to extract key financial metrics, strategic updates, and management commentary into a structured summary.",
+    "id": "text_summarization",
+    "last_used_at": "2026-05-15T10:35:36+00:00",
+    "usage_count": 17
+  },
+  {
+    "coined_at": "2026-05-13T11:36:43+00:00",
+    "coined_from_goal_hash": "f87cc89aec5bfee3",
+    "description": "Translate the provided earnings call text or transcript from English (or source language) into Mandarin Chinese.",
+    "id": "text_translation",
+    "last_used_at": "2026-05-15T10:35:36+00:00",
+    "usage_count": 17
+  }
+]

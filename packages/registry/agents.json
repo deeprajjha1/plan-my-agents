@@ -1,0 +1,1055 @@
+{
+  "$schema": "./agents.schema.json",
+  "version": "0.1.0",
+  "updated_at": "2026-05-04",
+  "notes": "v0 agent registry. Pricing approximate as of May 2026; verify on each vendor's pricing page before commitment. See docs/agent-registry.md for human-readable details and gotchas.",
+  "capabilities": [
+    "calendar_management",
+    "code_review",
+    "code_search",
+    "company_data_lookup",
+    "contact_enrichment",
+    "crm_query",
+    "customer_support_lookup",
+    "data_visualization",
+    "email_send",
+    "email_verification",
+    "file_operations",
+    "general_research",
+    "image_generation",
+    "legal_document_review",
+    "ocr",
+    "payment_authorization",
+    "price_comparison",
+    "semantic_search",
+    "shipping_quote",
+    "store_locator",
+    "text_summarization",
+    "transcription",
+    "translation",
+    "web_browsing",
+    "web_scraping",
+    "web_search"
+  ],
+  "agents": [
+    {
+      "id": "apollo",
+      "display_name": "Apollo",
+      "vendor": "Apollo.io",
+      "vendor_url": "https://apollo.io",
+      "capabilities": [
+        {
+          "id": "contact_enrichment",
+          "tier": "primary",
+          "endpoint": "POST /v1/people/match",
+          "unit_cost_usd": 0.05,
+          "pricing_model": "per_credit"
+        },
+        {
+          "id": "email_verification",
+          "tier": "secondary",
+          "endpoint": "POST /v1/people/match",
+          "unit_cost_usd": 0.05,
+          "pricing_model": "per_credit"
+        },
+        {
+          "id": "company_data_lookup",
+          "tier": "secondary",
+          "endpoint": "POST /v1/organizations/enrich",
+          "unit_cost_usd": 0.05,
+          "pricing_model": "per_credit"
+        }
+      ],
+      "api_base_url": "https://api.apollo.io/v1",
+      "auth": {
+        "type": "header",
+        "header_name": "X-Api-Key",
+        "env_var": "APOLLO_API_KEY"
+      },
+      "rate_limit": {
+        "rpm": 100,
+        "concurrent": 10
+      },
+      "quality_notes": "Excellent stability. Email_status field can be 'verified' | 'guessed' | 'unavailable' \u2014 must be surfaced in stitcher output.",
+      "gotchas": [
+        "Some emails returned only with extra credits (catch-all detection)",
+        "Bulk endpoints rate-limited harder than single-call",
+        "Plan tier affects which fields are returned"
+      ],
+      "gdpr_dpa_url": "https://apollo.io/legal/dpa",
+      "is_active": true
+    },
+    {
+      "id": "hunter",
+      "display_name": "Hunter.io",
+      "vendor": "Hunter.io",
+      "vendor_url": "https://hunter.io",
+      "capabilities": [
+        {
+          "id": "email_verification",
+          "tier": "primary",
+          "endpoint": "GET /v2/email-verifier",
+          "unit_cost_usd": 0.005,
+          "pricing_model": "per_request"
+        },
+        {
+          "id": "contact_enrichment",
+          "tier": "secondary",
+          "endpoint": "GET /v2/email-finder",
+          "unit_cost_usd": 0.01,
+          "pricing_model": "per_request"
+        }
+      ],
+      "api_base_url": "https://api.hunter.io/v2",
+      "auth": {
+        "type": "query_param",
+        "param_name": "api_key",
+        "env_var": "HUNTER_API_KEY"
+      },
+      "rate_limit": {
+        "rpm": 100,
+        "concurrent": 5
+      },
+      "quality_notes": "Excellent for email verification. Result enum: deliverable | undeliverable | risky | unknown. 'risky' should be flagged but not auto-discarded.",
+      "gotchas": [
+        "Email-finder accuracy lower than dedicated enrichment APIs for senior roles"
+      ],
+      "gdpr_dpa_url": "https://hunter.io/legal/dpa",
+      "is_active": true,
+      "adapter_module": "",
+      "is_benchmark_baseline": true,
+      "benchmark_adapter_module": "planmyagents_api.benchmark.baselines.hunter:HunterEmailVerifier"
+    },
+    {
+      "id": "clearbit",
+      "display_name": "Clearbit",
+      "vendor": "Clearbit (HubSpot)",
+      "vendor_url": "https://clearbit.com",
+      "capabilities": [
+        {
+          "id": "company_data_lookup",
+          "tier": "primary",
+          "endpoint": "GET /v2/companies/find",
+          "unit_cost_usd": 0.03,
+          "pricing_model": "per_call"
+        },
+        {
+          "id": "contact_enrichment",
+          "tier": "secondary",
+          "endpoint": "GET /v2/people/find",
+          "unit_cost_usd": 0.2,
+          "pricing_model": "per_call"
+        }
+      ],
+      "api_base_url": "https://company.clearbit.com",
+      "auth": {
+        "type": "bearer",
+        "env_var": "CLEARBIT_API_KEY"
+      },
+      "rate_limit": {
+        "rpm": 600,
+        "concurrent": 20
+      },
+      "quality_notes": "HubSpot-owned. Best-in-class for company-domain \u2192 firmographic enrichment when standalone API access is available.",
+      "gotchas": [
+        "Some legacy endpoints may change post-HubSpot acquisition; verify endpoint availability per quarter",
+        "Person endpoint pricing varies by data freshness tier"
+      ],
+      "gdpr_dpa_url": "https://stripe.com/legal/dpa",
+      "is_active": true
+    },
+    {
+      "id": "pdl",
+      "display_name": "People Data Labs",
+      "vendor": "People Data Labs",
+      "vendor_url": "https://peopledatalabs.com",
+      "capabilities": [
+        {
+          "id": "contact_enrichment",
+          "tier": "primary",
+          "endpoint": "GET /v5/person/enrich",
+          "unit_cost_usd": 0.2,
+          "pricing_model": "per_record"
+        },
+        {
+          "id": "company_data_lookup",
+          "tier": "secondary",
+          "endpoint": "GET /v5/company/enrich",
+          "unit_cost_usd": 0.05,
+          "pricing_model": "per_record"
+        }
+      ],
+      "api_base_url": "https://api.peopledatalabs.com/v5",
+      "auth": {
+        "type": "query_param",
+        "param_name": "api_key",
+        "env_var": "PDL_API_KEY"
+      },
+      "rate_limit": {
+        "rpm": 10,
+        "concurrent": 2
+      },
+      "quality_notes": "Higher cost than Apollo, but better recall for senior eng/tech roles. Field-level likelihood scores must be surfaced.",
+      "gotchas": [
+        "Strict rate limit on standard plan",
+        "Likelihood scores per field; agents must propagate confidence to stitcher"
+      ],
+      "gdpr_dpa_url": "https://peopledatalabs.com/legal/dpa",
+      "is_active": true
+    },
+    {
+      "id": "ebay-browse",
+      "display_name": "eBay Browse",
+      "vendor": "eBay",
+      "vendor_url": "https://developer.ebay.com",
+      "provider_type": "marketplace_provider",
+      "runtime_mode": "production",
+      "capabilities": [
+        {
+          "id": "price_comparison",
+          "tier": "primary",
+          "endpoint": "GET /buy/browse/v1/item_summary/search",
+          "unit_cost_usd": 0.0,
+          "pricing_model": "per_request"
+        }
+      ],
+      "api_base_url": "https://api.sandbox.ebay.com/buy/browse/v1",
+      "auth": {
+        "type": "bearer",
+        "env_var": "EBAY_OAUTH_TOKEN"
+      },
+      "rate_limit": {
+        "rpm": 5000,
+        "concurrent": 50
+      },
+      "quality_notes": "eBay Browse API for multi-seller price comparison. Defaults to the SANDBOX endpoint (api.sandbox.ebay.com); refuses production without explicit EBAY_ALLOW_PRODUCTION=true opt-in. OAuth Application Access Token (client_credentials grant) required \u2014 fetched out-of-band via the eBay developer portal (2-hour TTL, refresh out-of-band). Marketplace defaults to EBAY_US; override via EBAY_MARKETPLACE_ID. Wrapper computes min/avg/max prices locally from the listing list.",
+      "gotchas": [
+        "EBAY_OAUTH_TOKEN must be a valid Application Access Token (NOT a User Access Token).",
+        "Tokens expire after 2 hours; refresh out-of-band via the developer portal or a token-refresh job.",
+        "Production endpoint requires EBAY_ALLOW_PRODUCTION=true; sandbox is the safe default.",
+        "Query is capped at 350 chars (eBay's documented limit); limit is clamped to 50 (eBay's max page size).",
+        "Filters (price, condition) use eBay's quirky bracket / brace syntax; the wrapper handles encoding."
+      ],
+      "gdpr_dpa_url": "https://www.ebay.com/help/policies/member-behavior-policies/user-privacy-notice",
+      "is_active": true,
+      "adapter_module": "",
+      "is_benchmark_baseline": true,
+      "benchmark_adapter_module": "planmyagents_api.benchmark.baselines.ebay:EbayBrowseProvider",
+      "requires_benchmark_gate": true,
+      "benchmark_status": "not_started"
+    },
+    {
+      "id": "shippo-shipping",
+      "display_name": "Shippo",
+      "vendor": "Shippo",
+      "vendor_url": "https://goshippo.com",
+      "provider_type": "shipping_provider",
+      "runtime_mode": "production",
+      "capabilities": [
+        {
+          "id": "shipping_quote",
+          "tier": "primary",
+          "endpoint": "POST /shipments/",
+          "unit_cost_usd": 0.0,
+          "pricing_model": "per_request"
+        }
+      ],
+      "api_base_url": "https://api.goshippo.com",
+      "auth": {
+        "type": "token",
+        "env_var": "SHIPPO_API_TOKEN"
+      },
+      "rate_limit": {
+        "rpm": 250,
+        "concurrent": 25
+      },
+      "quality_notes": "Shippo's POST /shipments/?async=false returns rates synchronously from configured carrier accounts (USPS/UPS/FedEx/DHL by default). Wrapper defaults to test-mode (shippo_test_...) and refuses live tokens without explicit SHIPPO_ALLOW_LIVE_MODE=true opt-in. Quote step is FREE on every Shippo tier; only label purchase incurs charges (not modelled by v1 wrapper). Cheapest rate is computed locally from the rate list.",
+      "gotchas": [
+        "Live tokens require SHIPPO_ALLOW_LIVE_MODE=true; test tokens (shippo_test_...) work without the opt-in.",
+        "Address country code is required (Shippo will reject without it); wrapper validates locally to save a round-trip.",
+        "Parcel dimensions and weight must be > 0; wrapper validates locally.",
+        "All values are coerced to strings before sending (Shippo's contract).",
+        "Cost projection is $0 per quote (charges only happen on label purchase, out of v1 scope)."
+      ],
+      "gdpr_dpa_url": "https://goshippo.com/privacy/",
+      "is_active": true,
+      "adapter_module": "",
+      "is_benchmark_baseline": true,
+      "benchmark_adapter_module": "planmyagents_api.benchmark.baselines.shippo:ShippoQuoteFetcher",
+      "requires_benchmark_gate": true,
+      "benchmark_status": "not_started"
+    },
+    {
+      "id": "firecrawl",
+      "display_name": "Firecrawl",
+      "vendor": "Firecrawl",
+      "vendor_url": "https://firecrawl.dev",
+      "runtime_mode": "production",
+      "capabilities": [
+        {
+          "id": "web_scraping",
+          "tier": "primary",
+          "endpoint": "POST /v1/scrape",
+          "unit_cost_usd": 0.002,
+          "pricing_model": "per_page"
+        }
+      ],
+      "api_base_url": "https://api.firecrawl.dev/v1",
+      "auth": {
+        "type": "bearer",
+        "env_var": "FIRECRAWL_API_KEY"
+      },
+      "rate_limit": {
+        "rpm": 60,
+        "concurrent": 30
+      },
+      "quality_notes": "Excellent. Markdown output is LLM-friendly. 'extract' mode uses LLM for structured-data pulls (slightly more expensive, much higher quality on structured tasks). Wrapper enforces http(s)-only URLs, 8KB URL length cap, and detects test_mode for RFC-2606 reserved domains (example.com / .test / .invalid / localhost).",
+      "gotchas": [
+        "JS-heavy sites cost slightly more (passed through)",
+        "Crawl mode (multi-page) has separate rate limit",
+        "Wrapper refuses non-http(s) schemes (no file://, javascript:) at validation time \u2014 catches XSS-shaped inputs locally.",
+        "Wrapper-level success state is status='scraped'; an empty page (char_count=0) still succeeds because Firecrawl correctly returned empty content."
+      ],
+      "gdpr_dpa_url": "https://firecrawl.dev/legal",
+      "is_active": true,
+      "adapter_module": "",
+      "is_benchmark_baseline": true,
+      "benchmark_adapter_module": "planmyagents_api.benchmark.baselines.firecrawl:FirecrawlScraper",
+      "requires_benchmark_gate": true,
+      "benchmark_status": "not_started"
+    },
+    {
+      "id": "apify",
+      "display_name": "Apify",
+      "vendor": "Apify",
+      "vendor_url": "https://apify.com",
+      "capabilities": [
+        {
+          "id": "web_scraping",
+          "tier": "secondary",
+          "endpoint": "POST /v2/acts/<actor_id>/runs",
+          "unit_cost_usd": 0.05,
+          "pricing_model": "per_actor_run"
+        },
+        {
+          "id": "semantic_search",
+          "tier": "tertiary",
+          "endpoint": "POST /v2/acts/apify~google-search-scraper/runs",
+          "unit_cost_usd": 0.01,
+          "pricing_model": "per_query"
+        }
+      ],
+      "api_base_url": "https://api.apify.com/v2",
+      "auth": {
+        "type": "query_param",
+        "param_name": "token",
+        "env_var": "APIFY_API_TOKEN"
+      },
+      "rate_limit": {
+        "rpm": 30,
+        "concurrent": 5
+      },
+      "quality_notes": "Good. Quality varies wildly by actor. Whitelist a few high-quality actors only.",
+      "whitelisted_actors": [
+        "apify/google-search-scraper",
+        "compass/crawler-google-places"
+      ],
+      "gotchas": [
+        "Some actors slow (2\u201310 min/run); enforce timeouts",
+        "LinkedIn-related actors are ToS-grey; enable only with explicit customer toggle",
+        "Pricing varies dramatically by actor \u2014 must look up per actor"
+      ],
+      "gdpr_dpa_url": "https://apify.com/privacy-policy",
+      "is_active": true
+    },
+    {
+      "id": "tavily",
+      "display_name": "Tavily",
+      "vendor": "Tavily",
+      "vendor_url": "https://tavily.com",
+      "capabilities": [
+        {
+          "id": "semantic_search",
+          "tier": "primary",
+          "endpoint": "POST /search",
+          "unit_cost_usd": 0.01,
+          "pricing_model": "per_search"
+        }
+      ],
+      "api_base_url": "https://api.tavily.com",
+      "auth": {
+        "type": "body_field",
+        "field_name": "api_key",
+        "env_var": "TAVILY_API_KEY"
+      },
+      "rate_limit": {
+        "rpm": 100,
+        "concurrent": 10
+      },
+      "quality_notes": "Excellent. Purpose-built for agentic/RAG use. Structured output. Search depth tunable.",
+      "gotchas": [
+        "Advanced search depth costs ~3x basic"
+      ],
+      "gdpr_dpa_url": "https://tavily.com/privacy",
+      "is_active": true
+    },
+    {
+      "id": "exa",
+      "display_name": "Exa",
+      "vendor": "Exa",
+      "vendor_url": "https://exa.ai",
+      "capabilities": [
+        {
+          "id": "semantic_search",
+          "tier": "primary",
+          "endpoint": "POST /search",
+          "unit_cost_usd": 0.008,
+          "pricing_model": "per_search"
+        }
+      ],
+      "api_base_url": "https://api.exa.ai",
+      "auth": {
+        "type": "header",
+        "header_name": "x-api-key",
+        "env_var": "EXA_API_KEY"
+      },
+      "rate_limit": {
+        "rpm": 30,
+        "concurrent": 5
+      },
+      "quality_notes": "Excellent. Embeddings-based; differentiates with findSimilar endpoint (find pages like X). Best for 'discover similar companies' use case.",
+      "gotchas": [
+        "Content fetch is +$0.001/result on top of search cost"
+      ],
+      "gdpr_dpa_url": "https://exa.ai/privacy",
+      "is_active": true
+    },
+    {
+      "id": "crustdata",
+      "display_name": "Crustdata",
+      "vendor": "Crustdata",
+      "vendor_url": "https://crustdata.com",
+      "capabilities": [
+        {
+          "id": "company_data_lookup",
+          "tier": "specialty",
+          "endpoint": "POST /v1/screener/company",
+          "unit_cost_usd": 0.03,
+          "pricing_model": "per_call_estimated"
+        }
+      ],
+      "api_base_url": "https://api.crustdata.com",
+      "auth": {
+        "type": "bearer",
+        "env_var": "CRUSTDATA_API_KEY"
+      },
+      "rate_limit": {
+        "rpm": 30,
+        "concurrent": 5
+      },
+      "quality_notes": "Specialty: company growth signals (headcount trends, hiring velocity, dept-level growth). Uncorrelated with other agents \u2014 high diversity value.",
+      "gotchas": [
+        "Pricing is contract-based; for v0, treat as per-call equivalent",
+        "Best when used in combination with Clearbit (Clearbit for static firmographics, Crustdata for dynamic growth)"
+      ],
+      "gdpr_dpa_url": "https://crustdata.com/legal",
+      "is_active": true
+    },
+    {
+      "id": "diffbot",
+      "display_name": "Diffbot",
+      "vendor": "Diffbot",
+      "vendor_url": "https://diffbot.com",
+      "capabilities": [
+        {
+          "id": "web_scraping",
+          "tier": "tertiary",
+          "endpoint": "GET /v3/article",
+          "unit_cost_usd": 0.03,
+          "pricing_model": "per_call"
+        },
+        {
+          "id": "company_data_lookup",
+          "tier": "tertiary",
+          "endpoint": "POST /v3/dql",
+          "unit_cost_usd": 0.03,
+          "pricing_model": "per_call"
+        }
+      ],
+      "api_base_url": "https://api.diffbot.com",
+      "auth": {
+        "type": "query_param",
+        "param_name": "token",
+        "env_var": "DIFFBOT_TOKEN"
+      },
+      "rate_limit": {
+        "rpm": 30,
+        "concurrent": 5
+      },
+      "quality_notes": "Good. Knowledge Graph approach is fundamentally different from Firecrawl's render-and-extract. Better for highly-structured pages (product catalogs, structured articles). Slower (1\u20133s typical).",
+      "gotchas": [
+        "Auto-detection of page type can misfire; pin the API explicitly (Article API vs Product API vs Discussion API)",
+        "Knowledge Graph queries powerful but require learning DQL syntax"
+      ],
+      "gdpr_dpa_url": "https://diffbot.com/privacy",
+      "is_active": true
+    },
+    {
+      "id": "stripe-payments",
+      "display_name": "Stripe Payments",
+      "vendor": "Stripe",
+      "vendor_url": "https://stripe.com",
+      "provider_type": "payment_provider",
+      "runtime_mode": "production",
+      "capabilities": [
+        {
+          "id": "payment_authorization",
+          "tier": "primary",
+          "endpoint": "POST /v1/payment_intents",
+          "unit_cost_usd": 0.32,
+          "pricing_model": "per_call_estimated"
+        }
+      ],
+      "api_base_url": "https://api.stripe.com/v1",
+      "auth": {
+        "type": "bearer",
+        "env_var": "STRIPE_SECRET_KEY"
+      },
+      "rate_limit": {
+        "rpm": 100,
+        "concurrent": 25
+      },
+      "quality_notes": "Stripe PaymentIntent create-and-confirm flow. Wrapper defaults to test-mode (sk_test_...) and refuses live keys without explicit STRIPE_ALLOW_LIVE_MODE=true opt-in \u2014 a defence-in-depth on top of the cost-cap policy. Per-call cost estimate is 2.9% + $0.30 of the request amount; the ledger records the actual fee from the response.",
+      "gotchas": [
+        "Live keys require STRIPE_ALLOW_LIVE_MODE=true; test keys (sk_test_...) work without the opt-in.",
+        "Default payment_method is pm_card_visa (Stripe's pre-built test PaymentMethod that always succeeds in test mode).",
+        "Redirect-based payment methods are disabled at the wrapper level so the call resolves synchronously \u2014 use the manual confirm endpoint for SCA flows.",
+        "Idempotency-Key header is set from ProviderRequest.idempotency_key, so safe-to-retry.",
+        "Stripe-Version is pinned to 2025-09-30.clover; bump only after re-running benchmarks."
+      ],
+      "gdpr_dpa_url": "https://stripe.com/legal/dpa",
+      "is_active": true,
+      "adapter_module": "",
+      "is_benchmark_baseline": true,
+      "benchmark_adapter_module": "planmyagents_api.benchmark.baselines.stripe:StripePaymentAuthorization",
+      "requires_benchmark_gate": true,
+      "benchmark_status": "not_started"
+    },
+    {
+      "id": "razorpay-payments",
+      "display_name": "Razorpay Payments",
+      "vendor": "Razorpay",
+      "vendor_url": "https://razorpay.com",
+      "provider_type": "payment_provider",
+      "runtime_mode": "production",
+      "capabilities": [
+        {
+          "id": "payment_authorization",
+          "tier": "primary",
+          "endpoint": "POST /v1/orders",
+          "unit_cost_usd": 0.14,
+          "pricing_model": "per_call_estimated"
+        }
+      ],
+      "api_base_url": "https://api.razorpay.com/v1",
+      "auth": {
+        "type": "basic",
+        "env_var": "RAZORPAY_KEY_ID"
+      },
+      "required_env_vars": ["RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET"],
+      "rate_limit": {
+        "rpm": 600,
+        "concurrent": 30
+      },
+      "quality_notes": "Razorpay Order Create flow (server-side authorization step). Wrapper defaults to test-mode (rzp_test_...) and refuses live keys without explicit RAZORPAY_ALLOW_LIVE_MODE=true opt-in. Estimated INR fee is 2% + 18% GST (~2.36%); international fee is 3%. Wrapper-level success state is status='created'; payment capture happens via the customer-facing Checkout flow (out of scope for v1).",
+      "gotchas": [
+        "Live keys require RAZORPAY_ALLOW_LIVE_MODE=true; test keys (rzp_test_...) work without the opt-in.",
+        "Razorpay does NOT support zero-decimal currencies (no JPY) \u2014 the math is uniformly amount * 100.",
+        "Currency must be uppercase (Razorpay rejects lowercase ISO codes).",
+        "Receipt field is hard-capped at 40 chars; the wrapper truncates the idempotency key to fit.",
+        "Sets X-Idempotency-Key header from ProviderRequest.idempotency_key for safe retries.",
+        "Order Create does NOT charge any fee \u2014 the fee applies at customer-payment-capture (out of scope for the v1 wrapper)."
+      ],
+      "gdpr_dpa_url": "https://razorpay.com/privacy/",
+      "is_active": true,
+      "adapter_module": "",
+      "is_benchmark_baseline": true,
+      "benchmark_adapter_module": "planmyagents_api.benchmark.baselines.razorpay:RazorpayPaymentAuthorization",
+      "requires_benchmark_gate": true,
+      "benchmark_status": "passed",
+      "benchmark_status_evidence": "Live Razorpay test API run on 2026-05-15: 5/5 cases scored 1.00 quality (latency 178-265ms p99). Reproduce with `RAZORPAY_KEY_ID=rzp_test_... RAZORPAY_KEY_SECRET=... PYTHONPATH=apps/api .venv/bin/python -c 'from planmyagents_api.benchmark.runner import run_sync; from planmyagents_api.agents.razorpay import RazorpayPaymentAuthorization; from pathlib import Path; runs = run_sync(provider=RazorpayPaymentAuthorization(), capability=\"payment_authorization\", benchmarks_dir=Path(\"packages/benchmarks\")); [print(r.test_case_id, r.score.quality_score) for r in runs if r.test_case_id.startswith(\"razorpay-\")]'`. Case set: packages/benchmarks/payment_authorization/razorpay_payment_authorization_cases.yaml."
+    },
+    {
+      "id": "resend-emails",
+      "display_name": "Resend",
+      "vendor": "Resend",
+      "vendor_url": "https://resend.com",
+      "provider_type": "api_provider",
+      "runtime_mode": "production",
+      "capabilities": [
+        {
+          "id": "email_send",
+          "tier": "primary",
+          "endpoint": "POST /emails",
+          "unit_cost_usd": 0.0004,
+          "pricing_model": "per_request"
+        }
+      ],
+      "api_base_url": "https://api.resend.com",
+      "auth": {
+        "type": "bearer",
+        "env_var": "RESEND_API_KEY"
+      },
+      "rate_limit": {
+        "rpm": 100,
+        "concurrent": 10
+      },
+      "quality_notes": "Resend transactional-email API. Free tier: 3000 emails/month, 100/day. Wrapper defaults sender to onboarding@resend.dev (Resend's owned shared sender) and refuses real-domain senders without explicit RESEND_ALLOW_REAL_DOMAINS=true opt-in. Test addresses (delivered@/bounced@/complained@resend.dev) produce deterministic webhook events without sending real email. Wrapper-level success state is status='queued'; delivery / bounce / complaint state arrives via webhook later (out of scope for v1).",
+      "gotchas": [
+        "Real-domain senders require RESEND_ALLOW_REAL_DOMAINS=true; @resend.dev defaults work without the opt-in.",
+        "Sets Idempotency-Key header from ProviderRequest.idempotency_key \u2014 identical requests within 24 hours return the same email id.",
+        "Recipient accepted as either string or list of strings; wrapper normalises to list for the API call.",
+        "Test mode (test_mode=true) is detected when both from AND all recipients live on @resend.dev.",
+        "Cost projection uses paid-tier rate ($0.0004/email) even on the free tier so cap math is conservative."
+      ],
+      "gdpr_dpa_url": "https://resend.com/legal/dpa",
+      "is_active": true,
+      "adapter_module": "",
+      "is_benchmark_baseline": true,
+      "benchmark_adapter_module": "planmyagents_api.benchmark.baselines.resend:ResendEmailSender",
+      "requires_benchmark_gate": true,
+      "benchmark_status": "not_started"
+    }
+  ],
+  "discovered_agents": [
+    {
+      "id": "google-a2a-payment-agent",
+      "display_name": "google-a2a-payment-agent",
+      "vendor": "Google A2A Samples",
+      "vendor_url": "https://github.com/google-a2a",
+      "provider_type": "a2a_agent",
+      "capabilities": [
+        {
+          "id": "payment_authorization",
+          "confidence": 0.7,
+          "notes": "Capability declared by A2A Agent Card."
+        },
+        {
+          "id": "receipt_processing",
+          "confidence": 0.7,
+          "notes": "Capability declared by A2A Agent Card."
+        }
+      ],
+      "required_env_vars": [],
+      "compatible_provider_ids": [],
+      "lifecycle_status": "discovered",
+      "route_status": "will_fail",
+      "will_fail": true,
+      "will_fail_reasons": [
+        "PlanMyAgents has not benchmarked this provider for this capability yet.",
+        "Executable adapter or protocol client is not implemented yet.",
+        "Remote agent endpoint or protocol client is not configured yet."
+      ],
+      "discovery_priority": 2,
+      "adapter_module": "",
+      "benchmark_status": "not_started",
+      "discovery": {
+        "source": "a2a_agent_cards",
+        "first_seen_at": "2026-05-05",
+        "last_seen_at": "2026-05-05",
+        "requested_capabilities": [
+          "booking_execution",
+          "fare_comparison",
+          "payment_authorization",
+          "travel_search"
+        ],
+        "goal_hash": ""
+      }
+    },
+    {
+      "id": "google-a2a-travel-planner",
+      "display_name": "google-a2a-travel-planner",
+      "vendor": "Google A2A Samples",
+      "vendor_url": "https://github.com/google-a2a",
+      "provider_type": "a2a_agent",
+      "capabilities": [
+        {
+          "id": "fare_comparison",
+          "confidence": 0.7,
+          "notes": "Capability declared by A2A Agent Card."
+        },
+        {
+          "id": "itinerary_planning",
+          "confidence": 0.7,
+          "notes": "Capability declared by A2A Agent Card."
+        },
+        {
+          "id": "travel_search",
+          "confidence": 0.7,
+          "notes": "Capability declared by A2A Agent Card."
+        }
+      ],
+      "required_env_vars": [],
+      "compatible_provider_ids": [],
+      "lifecycle_status": "discovered",
+      "route_status": "will_fail",
+      "will_fail": true,
+      "will_fail_reasons": [
+        "PlanMyAgents has not benchmarked this provider for this capability yet.",
+        "Executable adapter or protocol client is not implemented yet.",
+        "Remote agent endpoint or protocol client is not configured yet."
+      ],
+      "discovery_priority": 2,
+      "adapter_module": "",
+      "benchmark_status": "not_started",
+      "discovery": {
+        "source": "a2a_agent_cards",
+        "first_seen_at": "2026-05-05",
+        "last_seen_at": "2026-05-05",
+        "requested_capabilities": [
+          "booking_execution",
+          "fare_comparison",
+          "payment_authorization",
+          "travel_search"
+        ],
+        "goal_hash": ""
+      }
+    },
+    {
+      "id": "amadeus",
+      "display_name": "Amadeus for Developers",
+      "vendor": "Amadeus",
+      "vendor_url": "https://developers.amadeus.com",
+      "provider_type": "api_provider",
+      "capabilities": [
+        {
+          "id": "fare_comparison",
+          "confidence": 0.85,
+          "notes": "Fare and offer comparison candidate."
+        },
+        {
+          "id": "travel_search",
+          "confidence": 0.9,
+          "notes": "Flight Offers Search API candidate."
+        }
+      ],
+      "required_env_vars": [
+        "AMADEUS_CLIENT_ID",
+        "AMADEUS_CLIENT_SECRET"
+      ],
+      "compatible_provider_ids": [],
+      "lifecycle_status": "discovered",
+      "route_status": "will_fail",
+      "will_fail": true,
+      "will_fail_reasons": [
+        "API key is required before execution.",
+        "PlanMyAgents has not benchmarked this provider for this capability yet.",
+        "Executable adapter is not implemented yet.",
+        "No promoted MCP/A2A/AI-agent provider is routable for this capability yet."
+      ],
+      "discovery_priority": 4,
+      "adapter_module": "",
+      "benchmark_status": "not_started",
+      "discovery": {
+        "source": "unsupported_goal_pipeline",
+        "first_seen_at": "2026-05-05",
+        "last_seen_at": "2026-05-05",
+        "requested_capabilities": [
+          "booking_execution",
+          "fare_comparison",
+          "payment_authorization",
+          "travel_search"
+        ],
+        "goal_hash": "ef28c5833bfb79982f631884c4a9d4865f024d86f455b7f10b106c1a1be71fa3"
+      }
+    },
+    {
+      "id": "aviationstack-api",
+      "display_name": "aviationstack-api",
+      "vendor": "Aviationstack",
+      "vendor_url": "https://aviationstack.com/documentation",
+      "provider_type": "api_provider",
+      "capabilities": [
+        {
+          "id": "flight_status_lookup",
+          "confidence": 0.62,
+          "notes": "Capability inferred from documentation manifest."
+        },
+        {
+          "id": "travel_search",
+          "confidence": 0.62,
+          "notes": "Capability inferred from documentation manifest."
+        }
+      ],
+      "required_env_vars": [
+        "AVIATIONSTACK_API_KEY"
+      ],
+      "compatible_provider_ids": [],
+      "lifecycle_status": "discovered",
+      "route_status": "will_fail",
+      "will_fail": true,
+      "will_fail_reasons": [
+        "API key is required before execution.",
+        "PlanMyAgents has not benchmarked this provider for this capability yet.",
+        "Executable adapter is not implemented yet.",
+        "No promoted MCP/A2A/AI-agent provider is routable for this capability yet."
+      ],
+      "discovery_priority": 4,
+      "adapter_module": "",
+      "benchmark_status": "not_started",
+      "discovery": {
+        "source": "web_doc_manifest",
+        "first_seen_at": "2026-05-05",
+        "last_seen_at": "2026-05-05",
+        "requested_capabilities": [
+          "booking_execution",
+          "fare_comparison",
+          "payment_authorization",
+          "travel_search"
+        ],
+        "goal_hash": ""
+      }
+    },
+    {
+      "id": "duffel",
+      "display_name": "Duffel",
+      "vendor": "Duffel",
+      "vendor_url": "https://duffel.com",
+      "provider_type": "api_provider",
+      "capabilities": [
+        {
+          "id": "booking_execution",
+          "confidence": 0.8,
+          "notes": "Order creation flow candidate."
+        },
+        {
+          "id": "fare_comparison",
+          "confidence": 0.8,
+          "notes": "Compare returned flight offers."
+        },
+        {
+          "id": "travel_search",
+          "confidence": 0.85,
+          "notes": "Flight offer search API candidate."
+        }
+      ],
+      "required_env_vars": [
+        "DUFFEL_API_TOKEN"
+      ],
+      "compatible_provider_ids": [],
+      "lifecycle_status": "discovered",
+      "route_status": "will_fail",
+      "will_fail": true,
+      "will_fail_reasons": [
+        "API key is required before execution.",
+        "PlanMyAgents has not benchmarked this provider for this capability yet.",
+        "Executable adapter is not implemented yet.",
+        "No promoted MCP/A2A/AI-agent provider is routable for this capability yet."
+      ],
+      "discovery_priority": 4,
+      "adapter_module": "",
+      "benchmark_status": "not_started",
+      "discovery": {
+        "source": "unsupported_goal_pipeline",
+        "first_seen_at": "2026-05-05",
+        "last_seen_at": "2026-05-05",
+        "requested_capabilities": [
+          "booking_execution",
+          "fare_comparison",
+          "payment_authorization",
+          "travel_search"
+        ],
+        "goal_hash": "ef28c5833bfb79982f631884c4a9d4865f024d86f455b7f10b106c1a1be71fa3"
+      }
+    },
+    {
+      "id": "skyscanner-api",
+      "display_name": "skyscanner-api",
+      "vendor": "Skyscanner",
+      "vendor_url": "https://developers.skyscanner.net",
+      "provider_type": "api_provider",
+      "capabilities": [
+        {
+          "id": "fare_comparison",
+          "confidence": 0.62,
+          "notes": "Capability inferred from documentation manifest."
+        },
+        {
+          "id": "travel_search",
+          "confidence": 0.62,
+          "notes": "Capability inferred from documentation manifest."
+        }
+      ],
+      "required_env_vars": [
+        "SKYSCANNER_API_KEY"
+      ],
+      "compatible_provider_ids": [],
+      "lifecycle_status": "discovered",
+      "route_status": "will_fail",
+      "will_fail": true,
+      "will_fail_reasons": [
+        "API key is required before execution.",
+        "PlanMyAgents has not benchmarked this provider for this capability yet.",
+        "Executable adapter is not implemented yet.",
+        "No promoted MCP/A2A/AI-agent provider is routable for this capability yet."
+      ],
+      "discovery_priority": 4,
+      "adapter_module": "",
+      "benchmark_status": "not_started",
+      "discovery": {
+        "source": "web_doc_manifest",
+        "first_seen_at": "2026-05-05",
+        "last_seen_at": "2026-05-05",
+        "requested_capabilities": [
+          "booking_execution",
+          "fare_comparison",
+          "payment_authorization",
+          "travel_search"
+        ],
+        "goal_hash": ""
+      }
+    },
+    {
+      "id": "adyen-payments-api",
+      "display_name": "adyen-payments-api",
+      "vendor": "Adyen",
+      "vendor_url": "https://docs.adyen.com",
+      "provider_type": "payment_provider",
+      "capabilities": [
+        {
+          "id": "payment_authorization",
+          "confidence": 0.62,
+          "notes": "Capability inferred from documentation manifest."
+        },
+        {
+          "id": "receipt_processing",
+          "confidence": 0.62,
+          "notes": "Capability inferred from documentation manifest."
+        }
+      ],
+      "required_env_vars": [
+        "ADYEN_API_KEY"
+      ],
+      "compatible_provider_ids": [],
+      "lifecycle_status": "discovered",
+      "route_status": "will_fail",
+      "will_fail": true,
+      "will_fail_reasons": [
+        "API key is required before execution.",
+        "PlanMyAgents has not benchmarked this provider for this capability yet.",
+        "Executable adapter is not implemented yet.",
+        "No promoted MCP/A2A/AI-agent provider is routable for this capability yet."
+      ],
+      "discovery_priority": 5,
+      "adapter_module": "",
+      "benchmark_status": "not_started",
+      "discovery": {
+        "source": "web_doc_manifest",
+        "first_seen_at": "2026-05-05",
+        "last_seen_at": "2026-05-05",
+        "requested_capabilities": [
+          "booking_execution",
+          "fare_comparison",
+          "payment_authorization",
+          "travel_search"
+        ],
+        "goal_hash": ""
+      }
+    },
+    {
+      "id": "paypal-rest-api",
+      "display_name": "paypal-rest-api",
+      "vendor": "PayPal",
+      "vendor_url": "https://developer.paypal.com/api/rest",
+      "provider_type": "payment_provider",
+      "capabilities": [
+        {
+          "id": "payment_authorization",
+          "confidence": 0.62,
+          "notes": "Capability inferred from documentation manifest."
+        },
+        {
+          "id": "receipt_processing",
+          "confidence": 0.62,
+          "notes": "Capability inferred from documentation manifest."
+        }
+      ],
+      "required_env_vars": [
+        "PAYPAL_CLIENT_ID",
+        "PAYPAL_CLIENT_SECRET"
+      ],
+      "compatible_provider_ids": [],
+      "lifecycle_status": "discovered",
+      "route_status": "will_fail",
+      "will_fail": true,
+      "will_fail_reasons": [
+        "API key is required before execution.",
+        "PlanMyAgents has not benchmarked this provider for this capability yet.",
+        "Executable adapter is not implemented yet.",
+        "No promoted MCP/A2A/AI-agent provider is routable for this capability yet."
+      ],
+      "discovery_priority": 5,
+      "adapter_module": "",
+      "benchmark_status": "not_started",
+      "discovery": {
+        "source": "web_doc_manifest",
+        "first_seen_at": "2026-05-05",
+        "last_seen_at": "2026-05-05",
+        "requested_capabilities": [
+          "booking_execution",
+          "fare_comparison",
+          "payment_authorization",
+          "travel_search"
+        ],
+        "goal_hash": ""
+      }
+    },
+    {
+      "id": "stripe-payments-api",
+      "display_name": "stripe-payments-api",
+      "vendor": "Stripe",
+      "vendor_url": "https://docs.stripe.com",
+      "provider_type": "payment_provider",
+      "capabilities": [
+        {
+          "id": "payment_authorization",
+          "confidence": 0.62,
+          "notes": "Capability inferred from documentation manifest."
+        },
+        {
+          "id": "receipt_processing",
+          "confidence": 0.62,
+          "notes": "Capability inferred from documentation manifest."
+        }
+      ],
+      "required_env_vars": [
+        "STRIPE_SECRET_KEY"
+      ],
+      "compatible_provider_ids": [],
+      "lifecycle_status": "discovered",
+      "route_status": "will_fail",
+      "will_fail": true,
+      "will_fail_reasons": [
+        "API key is required before execution.",
+        "PlanMyAgents has not benchmarked this provider for this capability yet.",
+        "Executable adapter is not implemented yet.",
+        "No promoted MCP/A2A/AI-agent provider is routable for this capability yet."
+      ],
+      "discovery_priority": 5,
+      "adapter_module": "",
+      "benchmark_status": "not_started",
+      "discovery": {
+        "source": "web_doc_manifest",
+        "first_seen_at": "2026-05-05",
+        "last_seen_at": "2026-05-05",
+        "requested_capabilities": [
+          "booking_execution",
+          "fare_comparison",
+          "payment_authorization",
+          "travel_search"
+        ],
+        "goal_hash": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "_comment": "Seed list of public A2A agent cards fed into the A2A scout. Entries describe REAL third-party A2A agents — customer execution flows through the GenericA2AAdapter + BYO-credentials sandbox; we never hand-write a wrapper.",
+  "agent_cards": [
+    {"name": "google-a2a-currency-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["currency_conversion", "financial_data_lookup"]},
+    {"name": "google-a2a-travel-planner", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["travel_search", "fare_comparison", "itinerary_planning"], "verification_status": "unverified_example"},
+    {"name": "google-a2a-expense-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["expense_classification", "receipt_processing", "financial_compliance"]},
+    {"name": "google-a2a-research-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["semantic_search", "document_retrieval", "research_synthesis"]},
+    {"name": "google-a2a-calendar-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["calendar_scheduling", "availability_lookup"]},
+    {"name": "google-a2a-shopping-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["product_search", "price_comparison", "order_execution"]},
+    {"name": "google-a2a-support-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["support_ticket_triage", "knowledge_base_lookup"]},
+    {"name": "google-a2a-code-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["code_search", "repository_lookup", "code_generation"]},
+    {"name": "google-a2a-sales-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["contact_enrichment", "company_data_lookup", "semantic_search"]},
+    {"name": "google-a2a-logistics-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["shipping_quote", "cross_border_commerce", "delivery_tracking"]},
+    {"name": "google-a2a-payment-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["payment_authorization", "receipt_processing"]},
+    {"name": "google-a2a-legal-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["legal_verification", "policy_lookup", "compliance_review"]},
+    {"name": "google-a2a-data-agent", "provider": {"name": "Google A2A Samples", "url": "https://github.com/google-a2a"}, "skills": ["structured_data_lookup", "database_query", "data_transformation"]}
+  ]
+}

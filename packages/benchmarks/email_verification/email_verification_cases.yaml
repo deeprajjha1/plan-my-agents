@@ -1,0 +1,321 @@
+cases:
+  - id: email-0001-valid-saas-work-email
+    capability: email_verification
+    difficulty: easy
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: jane.doe@acme.com
+    expected:
+      result:
+        accept: ["deliverable"]
+        weight: 0.6
+      score:
+        min_score: 80
+        weight: 0.4
+    notes: Common valid work-email shape.
+
+  - id: email-0002-valid-subdomain-email
+    capability: email_verification
+    difficulty: easy
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: alex@research.acme.com
+    expected:
+      result:
+        accept: ["deliverable"]
+        weight: 0.6
+      score:
+        min_score: 80
+        weight: 0.4
+    notes: Valid email with subdomain; providers should not reject solely because of subdomain.
+
+  - id: email-0003-invalid-known-domain
+    capability: email_verification
+    difficulty: easy
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: missing@invalid.example
+    expected:
+      result:
+        accept: ["undeliverable"]
+        weight: 0.7
+      score:
+        equals: 5
+        weight: 0.3
+    notes: Synthetic invalid domain used to catch providers that mark everything deliverable.
+
+  - id: email-0004-malformed-email
+    capability: email_verification
+    difficulty: easy
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: not-an-email
+    expected:
+      result:
+        accept: ["undeliverable"]
+        weight: 0.7
+      score:
+        equals: 0
+        weight: 0.3
+    notes: Basic syntax failure.
+
+  - id: email-0005-catchall-risky
+    capability: email_verification
+    difficulty: medium
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: founder@catchall.example
+    expected:
+      result:
+        accept: ["risky"]
+        weight: 0.7
+      score:
+        min_score: 40
+        weight: 0.3
+    notes: Catch-all domains should be marked risky, not guaranteed deliverable.
+
+  - id: email-0006-generic-info-address
+    capability: email_verification
+    difficulty: medium
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: info@acme.com
+    expected:
+      result:
+        accept: ["deliverable"]
+        weight: 0.5
+      score:
+        min_score: 80
+        weight: 0.5
+    notes: Generic inboxes may be deliverable even if less useful for outbound.
+
+  - id: email-0007-uppercase-normalization
+    capability: email_verification
+    difficulty: easy
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: JANE.DOE@ACME.COM
+    expected:
+      result:
+        accept: ["deliverable"]
+        weight: 0.5
+      email:
+        accept: ["jane.doe@acme.com", "JANE.DOE@ACME.COM"]
+        weight: 0.5
+    notes: Verifier should handle case-insensitive email syntax.
+
+  - id: email-0008-plus-addressing
+    capability: email_verification
+    difficulty: medium
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: jane+sales@acme.com
+    expected:
+      result:
+        accept: ["deliverable"]
+        weight: 0.7
+      score:
+        min_score: 80
+        weight: 0.3
+    notes: Plus-addressing is valid syntax and common in tests.
+
+  - id: email-0009-unknown-state
+    capability: email_verification
+    difficulty: hard
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: unknown.user@acme.com
+    expected:
+      result:
+        accept: ["unknown"]
+        weight: 0.7
+      score:
+        min_score: 30
+        weight: 0.3
+    notes: Some records cannot be verified and should be marked unknown rather than hallucinated.
+
+  - id: email-0010-adversarial-fake-domain
+    capability: email_verification
+    difficulty: adversarial
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: ceo@nonexistent-fake-company-xyz.invalid.example
+    expected:
+      result:
+        accept: ["undeliverable"]
+        weight: 0.8
+      score:
+        equals: 5
+        weight: 0.2
+    notes: Hallucination trap; dishonest providers often mark it deliverable.
+
+  - id: email-0011-valid-hyphen-domain
+    capability: email_verification
+    difficulty: medium
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: ops@acme-labs.com
+    expected:
+      result:
+        accept: ["deliverable"]
+        weight: 0.7
+      score:
+        min_score: 80
+        weight: 0.3
+    notes: Hyphenated domains are valid.
+
+  - id: email-0012-valid-numeric-domain
+    capability: email_verification
+    difficulty: medium
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: founder@startup24.com
+    expected:
+      result:
+        accept: ["deliverable"]
+        weight: 0.7
+      score:
+        min_score: 80
+        weight: 0.3
+    notes: Numeric domains are valid.
+
+  - id: email-0013-missing-at-symbol
+    capability: email_verification
+    difficulty: easy
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: janedoe.acme.com
+    expected:
+      result:
+        accept: ["undeliverable"]
+        weight: 0.7
+      score:
+        equals: 0
+        weight: 0.3
+    notes: Malformed input should fail fast.
+
+  - id: email-0014-missing-tld
+    capability: email_verification
+    difficulty: easy
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: jane@localhost
+    expected:
+      result:
+        accept: ["undeliverable"]
+        weight: 0.7
+      score:
+        equals: 0
+        weight: 0.3
+    notes: Public B2B email should include a valid domain-like suffix.
+
+  - id: email-0015-catchall-subdomain-risky
+    capability: email_verification
+    difficulty: hard
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: jane@mail.catchall.example
+    expected:
+      result:
+        accept: ["risky"]
+        weight: 0.7
+      score:
+        min_score: 40
+        weight: 0.3
+    notes: Catch-all behavior may appear at subdomain level.
+
+  - id: email-0016-valid-long-local-part
+    capability: email_verification
+    difficulty: medium
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: jane.elizabeth.doe@acme.com
+    expected:
+      result:
+        accept: ["deliverable"]
+        weight: 0.7
+      score:
+        min_score: 80
+        weight: 0.3
+    notes: Long local parts are common for corporate email patterns.
+
+  - id: email-0017-invalid-empty-local-part
+    capability: email_verification
+    difficulty: easy
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: "@acme.com"
+    expected:
+      result:
+        accept: ["undeliverable"]
+        weight: 0.7
+      score:
+        equals: 0
+        weight: 0.3
+    notes: Empty local part must fail.
+
+  - id: email-0018-valid-de-domain
+    capability: email_verification
+    difficulty: medium
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: hans@acme.de
+    expected:
+      result:
+        accept: ["deliverable"]
+        weight: 0.7
+      score:
+        min_score: 80
+        weight: 0.3
+    notes: EU ccTLD case.
+
+  - id: email-0019-valid-io-domain
+    capability: email_verification
+    difficulty: medium
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: api@startup.io
+    expected:
+      result:
+        accept: ["deliverable"]
+        weight: 0.7
+      score:
+        min_score: 80
+        weight: 0.3
+    notes: Common SaaS ccTLD.
+
+  - id: email-0020-adversarial-obvious-guess
+    capability: email_verification
+    difficulty: adversarial
+    created_at: 2026-05-04
+    created_by: founder
+    inputs:
+      email: first.last@invalid.example
+    expected:
+      result:
+        accept: ["undeliverable"]
+        weight: 0.8
+      score:
+        equals: 5
+        weight: 0.2
+    notes: Catches providers that infer validity from pattern rather than delivery signals.
+

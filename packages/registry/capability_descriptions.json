@@ -1,0 +1,219 @@
+{
+  "$schema": "./capability_descriptions.schema.json",
+  "version": "0.1.0",
+  "updated_at": "2026-05-16",
+  "notes": "Human-readable descriptions of every router-supported capability in agents.json. The goal decomposer uses this as a catalog_hint so the LLM can REUSE these slugs instead of coining synonymous ones (which discovery scouts can't match). Each entry is the LLM's only signal for what a slug means — keep `description` precise and `examples` concrete. When you add a new capability to agents.json, you MUST add a matching entry here or the decomposer will silently coin a synonym.",
+  "capabilities": {
+    "calendar_management": {
+      "description": "Read, create, update, or cancel calendar events; manage meeting invites, attendee responses, and availability lookups across calendar systems like Google Calendar, Outlook, or Calendly.",
+      "examples": [
+        "Schedule a meeting with three teammates next Tuesday",
+        "Find a 30-minute slot when everyone on the team is free",
+        "Cancel all recurring meetings for someone on leave"
+      ]
+    },
+    "code_review": {
+      "description": "Review source code diffs, pull requests, or whole files for correctness, style, security, or maintainability issues, returning structured comments or a verdict.",
+      "examples": [
+        "Review this pull request for security issues",
+        "Suggest improvements to a function",
+        "Flag style violations in a commit"
+      ]
+    },
+    "code_search": {
+      "description": "Search source code repositories by symbol name, function signature, regex, or natural-language intent across one or many repos. NOT for general web search.",
+      "examples": [
+        "Find every call site of `parseUser` in the org's repos",
+        "Show how a specific React hook is used across the codebase",
+        "Locate the SQL migration that added the `users` table"
+      ]
+    },
+    "company_data_lookup": {
+      "description": "Given a company name or domain, look up firmographic data: headquarters, employee count, industry, funding rounds, exec roster, parent/subsidiary structure.",
+      "examples": [
+        "Get the headcount and funding history for Acme Corp",
+        "Find the CEO and CTO of a private company",
+        "Look up which industry vertical a vendor is in"
+      ]
+    },
+    "contact_enrichment": {
+      "description": "Given a partial contact (name, email, or company), find verified contact details: corporate email, phone, LinkedIn URL, role, employer. Person-level enrichment, not company-level.",
+      "examples": [
+        "Find the work email for Jane Smith at Acme",
+        "Resolve a LinkedIn profile to a phone number",
+        "Look up the title of someone given just their email"
+      ]
+    },
+    "crm_query": {
+      "description": "Read or write records in a hosted CRM (Salesforce, HubSpot, Pipedrive, etc.): query opportunities, accounts, contacts, tasks, notes; create or update them.",
+      "examples": [
+        "Pull the last 10 opportunities for an account in Salesforce",
+        "Create a new lead in HubSpot",
+        "Update the stage of a deal in Pipedrive"
+      ]
+    },
+    "customer_support_lookup": {
+      "description": "Search a vendor's support knowledge base, FAQ, help-center articles, or ticket history to answer how-to or status questions.",
+      "examples": [
+        "Find the help article explaining how to enable SSO",
+        "Look up the resolution of a previous support ticket",
+        "Search the FAQ for refund policy"
+      ]
+    },
+    "data_visualization": {
+      "description": "Render charts, graphs, dashboards, or interactive visualisations from structured input data (CSV, JSON, SQL result set). Produces images, HTML, or chart configs.",
+      "examples": [
+        "Make a bar chart of monthly revenue",
+        "Build a dashboard showing user signups by region",
+        "Generate a line graph from a CSV"
+      ]
+    },
+    "email_send": {
+      "description": "Send an email (transactional or marketing) via SMTP or a hosted API like Resend, SendGrid, Mailgun, AWS SES.",
+      "examples": [
+        "Send a confirmation email to a customer",
+        "Email a daily summary to a distribution list",
+        "Send a one-off notification to an address"
+      ]
+    },
+    "email_verification": {
+      "description": "Given an email address, determine whether it is deliverable: catch-all detection, MX validity, syntax, role-account flag, disposable-domain check. Pre-send hygiene only.",
+      "examples": [
+        "Check whether `jane@acme.com` is a valid mailbox",
+        "Filter a list of leads to drop bouncing addresses",
+        "Detect whether an address is a disposable inbox"
+      ]
+    },
+    "file_operations": {
+      "description": "Read, write, list, move, copy, or delete files on local disk or in cloud object storage (S3, GCS, Azure Blob, Dropbox). For programmatic file manipulation, not document understanding.",
+      "examples": [
+        "Upload a file to an S3 bucket",
+        "List all files in a Google Drive folder",
+        "Move a folder from one location to another"
+      ]
+    },
+    "general_research": {
+      "description": "Open-ended web research that synthesises information from multiple sources into a written report. Use when the task needs reading and summarising several pages, not a single answer.",
+      "examples": [
+        "Research the top 5 e-bike brands in India and write a comparison",
+        "Investigate the regulatory landscape for stablecoins in the EU",
+        "Summarise the academic literature on a topic"
+      ]
+    },
+    "image_generation": {
+      "description": "Generate images from text prompts via models like DALL-E, Stable Diffusion, Midjourney, Imagen. Produces image files or URLs.",
+      "examples": [
+        "Create a logo for a new product",
+        "Generate a header image for a blog post",
+        "Make a stylised portrait from a description"
+      ]
+    },
+    "legal_document_review": {
+      "description": "Analyse legal documents (contracts, NDAs, policies, terms of service) for risky clauses, missing provisions, deviations from standard templates, or compliance issues.",
+      "examples": [
+        "Flag risky clauses in this vendor contract",
+        "Check whether an NDA matches our template",
+        "Review a privacy policy for GDPR compliance"
+      ]
+    },
+    "ocr": {
+      "description": "Extract text from images or scanned PDFs (printed or handwritten). Optical character recognition only — not document layout understanding or form parsing.",
+      "examples": [
+        "Extract the text from a scanned invoice image",
+        "Read the printed text on a photograph",
+        "Convert a scanned PDF into searchable text"
+      ]
+    },
+    "payment_authorization": {
+      "description": "Initiate or authorise a payment, create a charge, capture an authorised charge, or issue a refund via a payments processor (Stripe, Razorpay, PayPal, Adyen). Use this for ANY 'buy', 'purchase', 'checkout', 'pay for', 'collect payment' style sub-task.",
+      "examples": [
+        "Charge a customer's card for $50",
+        "Authorise a payment for an e-commerce order",
+        "Issue a refund for a returned product",
+        "Process the checkout step for a purchase"
+      ]
+    },
+    "price_comparison": {
+      "description": "Compare prices for the same product, service, or SKU across multiple vendors, marketplaces, or quote APIs. Use this for ANY 'compare prices', 'find the cheapest', 'filter by budget' style sub-task.",
+      "examples": [
+        "Find the cheapest seller for an iPhone in India",
+        "Compare hotel prices across three booking sites",
+        "Filter products in a category by price range"
+      ]
+    },
+    "semantic_search": {
+      "description": "Search a corpus (documents, embeddings index, vector database) by meaning rather than keywords. Returns ranked passages from the supplied corpus, not the open web.",
+      "examples": [
+        "Find documents in our knowledge base similar to a question",
+        "Retrieve the most relevant FAQ entries for a query",
+        "Look up internal docs by intent rather than exact words"
+      ]
+    },
+    "shipping_quote": {
+      "description": "Get shipping rates, delivery time estimates, or carrier options for sending a package from an origin address to a destination via UPS, FedEx, USPS, Shippo, ShipEngine, Delhivery, Bluedart. Use this for 'arrange delivery', 'estimate shipping', 'pick a courier' style sub-tasks.",
+      "examples": [
+        "Get a UPS quote to ship a 2 kg package from Bengaluru to Mumbai",
+        "Compare carrier options for international shipping",
+        "Estimate delivery time for a domestic package"
+      ]
+    },
+    "store_locator": {
+      "description": "Find brick-and-mortar store locations for a brand or category near a city, postcode, or coordinates. Returns store addresses, hours, contact info. Geography-aware, not general search.",
+      "examples": [
+        "Find Apple stores in Bengaluru",
+        "List the nearest pharmacies to a postcode",
+        "Look up showrooms for a car brand in a city"
+      ]
+    },
+    "text_summarization": {
+      "description": "Condense a long passage of text into a shorter summary at a specified length or detail level. Single-document, not a research synthesis across many sources.",
+      "examples": [
+        "Summarise a 20-page report into 5 bullet points",
+        "Write a TL;DR for a long article",
+        "Reduce a meeting transcript to key decisions"
+      ]
+    },
+    "transcription": {
+      "description": "Convert spoken audio (recorded or live) into written text. Use for podcasts, meetings, voice notes, calls. Audio-to-text only.",
+      "examples": [
+        "Transcribe a Zoom recording",
+        "Convert a voicemail to text",
+        "Get a written transcript of a podcast episode"
+      ]
+    },
+    "translation": {
+      "description": "Translate text from one human language to another (e.g. English to Hindi, Japanese to French). Whole-passage translation, not glossary lookups.",
+      "examples": [
+        "Translate a product description from English to German",
+        "Translate a support reply into Spanish",
+        "Localise marketing copy into Japanese"
+      ]
+    },
+    "web_browsing": {
+      "description": "Drive a real browser to navigate to URLs, click buttons, fill forms, scroll, and read the rendered DOM. Use when JavaScript-driven sites or login walls block plain HTTP fetches, or when a multi-step interactive workflow is required.",
+      "examples": [
+        "Log into a portal and download a report",
+        "Fill out a multi-page web form",
+        "Click through a checkout flow that requires JavaScript"
+      ]
+    },
+    "web_scraping": {
+      "description": "Fetch a web page and extract structured data (lists, tables, fields) from its HTML. Single-page or list-of-pages extraction, no interaction beyond the initial fetch. Use for documentation, product pages, news sites.",
+      "examples": [
+        "Extract product prices and titles from a category page",
+        "Scrape the news headlines from a public homepage",
+        "Pull structured fields from a documentation page"
+      ]
+    },
+    "web_search": {
+      "description": "Query a general-purpose web search engine (Google, Bing, Brave, Tavily, Exa) and return ranked results. Use this for ANY 'find X on the web', 'research options', 'look up ideas', 'search for vendors', 'discover products' style sub-task. This is the default tool for open-web information gathering when no more specific capability fits.",
+      "examples": [
+        "Find gift ideas for a 3-year-old",
+        "Look up vendors that sell a specific product",
+        "Search for reviews of a product or brand",
+        "Discover popular options in a category",
+        "Research what's available in a market"
+      ]
+    }
+  }
+}

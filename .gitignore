@@ -1,0 +1,13 @@
+.planmyagents_runs/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+node_modules/
+.env
+.env.*
+# Keep the template tracked so `cp .env.example .env` works for fresh
+# clones — the `.env.*` glob above would otherwise hide it. Order
+# matters: this negation must come AFTER the broader glob.
+!.env.example
+

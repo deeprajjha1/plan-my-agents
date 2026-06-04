@@ -1,0 +1,65 @@
+# sprint-6 / B — baseline-firewall audit.
+#
+# Fails the build the moment any code path inside the customer routing /
+# planning / web / workflows surface imports from
+# `planmyagents_api.benchmark.baselines.*`. Under the post-16-May-2026
+# product spec (see PITCH_DECK.md slide "Where we DO NOT play" and
+# `apps/api/planmyagents_api/benchmark/baselines/__init__.py`), the
+# hand-written vendor wrappers are scoring baselines for the benchmark
+# runner ONLY — never reachable from a customer `/goal` request.
+#
+# This workflow runs the shallow grep guard (`audit_baseline_firewall.py`).
+# The DEEP invariant — "no baseline module ends up in `sys.modules` after
+# importing any routing module" — is checked by the Python test
+# `test_benchmark_baseline_firewall.py` on every PR. The two together are
+# defence in depth; either catches the bug if the other misses it.
+#
+# Runs on:
+#   * every push (any branch) — instant feedback before merge
+#   * every PR — required check before merge
+#   * manual dispatch (when an operator wants to confirm cleanliness)
+#
+# When this turns red: the JSON report under the workflow output shows
+# the violating file:line and the import that crossed the firewall. The
+# fix is almost always: extract the shared symbol to a neutral utility
+# module (e.g. `planmyagents_api.test_domains`), or move the routing-side
+# logic to the benchmark surface instead.
+
+name: firewall-audit
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # The audit script depends on the stdlib only — no requirements
+      # install needed, which keeps this job fast (<30s) so it can run
+      # on every commit without slowing CI.
+      - name: Run baseline-firewall audit
+        run: python scripts/audit_baseline_firewall.py
+
+      # The deep invariant lives in this Python test. We run it in the
+      # same job so a single workflow guarantees BOTH guards passed.
+      - name: Install Python deps for the deep firewall test
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -r requirements.txt
+
+      - name: Deep firewall test (no baseline in sys.modules)
+        env:
+          PYTHONPATH: apps/api
+        run: .venv/bin/python -m unittest apps.api.tests.test_benchmark_baseline_firewall apps.api.tests.test_audit_baseline_firewall -v

@@ -1,0 +1,152 @@
+# Sprint 3a (S3a-2): hand-authored benchmark cases for the
+# payment_authorization capability.
+#
+# These cases are deterministic against Stripe's published test
+# environment when run against the real API with a sk_test_... key.
+# Stripe documents:
+#   - pm_card_visa: always succeeds (Visa 4242 4242 4242 4242)
+#   - pm_card_chargeDeclined: card_declined / generic_decline
+#   - pm_card_chargeDeclinedInsufficientFunds: insufficient_funds
+#   - pm_card_authenticationRequired: requires 3DS challenge
+#       (with allow_redirects=never the wrapper sees the bare
+#        "requires_action" status — exactly the honest answer)
+#   - pm_card_visa_chargeDeclinedExpiredCard: expired_card
+# See: https://docs.stripe.com/testing#cards
+#
+# Scoring philosophy: the wrapper's job is to (a) succeed for cards
+# that should succeed, (b) report the actual failure mode for cards
+# that shouldn't, and (c) NEVER claim success for a declined card.
+# Cases include one adversarial test that catches a wrapper that
+# normalises any 200 response to "succeeded".
+
+cases:
+  - id: payment-0001-basic-usd-charge
+    capability: payment_authorization
+    difficulty: easy
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      amount: 20.0
+      currency: usd
+      payment_method: pm_card_visa
+      description: Stripe wrapper benchmark - basic USD charge
+    expected:
+      status:
+        accept: ["succeeded"]
+        weight: 0.5
+      intent_id:
+        format_check: "^pi_[A-Za-z0-9]{8,}$"
+        weight: 0.2
+      currency:
+        equals: "usd"
+        weight: 0.15
+      amount_minor:
+        equals: 2000
+        weight: 0.15
+    notes: >
+      Smallest happy-path case. $20 USD on Stripe's always-succeeds test
+      card. The wrapper must convert dollars→cents and propagate
+      currency verbatim. intent_id must look like a real Stripe
+      PaymentIntent id (catches wrappers that hallucinate ids without
+      hitting the API).
+
+  - id: payment-0002-stripe-minimum-amount
+    capability: payment_authorization
+    difficulty: easy
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      amount: 0.50
+      currency: usd
+      payment_method: pm_card_visa
+      description: Stripe wrapper benchmark - $0.50 minimum
+    expected:
+      status:
+        accept: ["succeeded"]
+        weight: 0.6
+      amount_minor:
+        equals: 50
+        weight: 0.4
+    notes: >
+      Boundary test: Stripe's documented minimum charge is $0.50 USD
+      ($0.30 fee + $0.20 net). Catches wrappers that round-trip the
+      amount through float math wrongly (50 cents must not become
+      49 or 51).
+
+  - id: payment-0003-jpy-zero-decimal
+    capability: payment_authorization
+    difficulty: medium
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      amount: 3000
+      currency: jpy
+      payment_method: pm_card_visa
+      description: Stripe wrapper benchmark - JPY zero-decimal
+    expected:
+      status:
+        accept: ["succeeded"]
+        weight: 0.4
+      currency:
+        equals: "jpy"
+        weight: 0.2
+      amount_minor:
+        equals: 3000
+        weight: 0.4
+    notes: >
+      Zero-decimal currency test. JPY does NOT have minor units —
+      ¥3000 must be sent as amount=3000, NOT amount=300000. A wrapper
+      that blindly multiplies by 100 will lose 99% of the customer's
+      money to Stripe's currency math. This case catches that bug.
+
+  - id: payment-0004-card-declined
+    capability: payment_authorization
+    difficulty: hard
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      amount: 50.00
+      currency: usd
+      payment_method: pm_card_chargeDeclined
+      description: Stripe wrapper benchmark - generic decline
+    expected:
+      status:
+        accept: ["requires_payment_method", "canceled"]
+        weight: 0.7
+      intent_id:
+        format_check: "^pi_[A-Za-z0-9]{8,}$"
+        weight: 0.3
+    notes: >
+      Honest decline: Stripe's pm_card_chargeDeclined returns a
+      PaymentIntent with status=requires_payment_method (the customer
+      needs to provide a different card). The wrapper must NOT mark
+      this as succeeded, NOT throw an exception, and DOES need to
+      surface the intent_id so the caller can retry with a new
+      payment_method on the same intent (the safe-retry pattern).
+
+  - id: payment-0005-3ds-authentication-required
+    capability: payment_authorization
+    difficulty: adversarial
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      amount: 100.00
+      currency: usd
+      payment_method: pm_card_authenticationRequired
+      description: Stripe wrapper benchmark - 3DS / SCA required
+    expected:
+      status:
+        accept: ["requires_action"]
+        weight: 0.8
+      intent_id:
+        format_check: "^pi_[A-Za-z0-9]{8,}$"
+        weight: 0.2
+    notes: >
+      Adversarial: a card that demands a 3D-Secure challenge. With
+      automatic_payment_methods.allow_redirects=never the wrapper
+      can't follow the SCA redirect, so Stripe returns
+      status="requires_action". The wrapper must report this status
+      VERBATIM rather than normalising it to "succeeded" (would let a
+      bad actor bypass SCA) or "failed" (would refuse legitimate
+      payments). Catches the most dangerous class of payment-wrapper
+      bugs: silent SCA bypass.

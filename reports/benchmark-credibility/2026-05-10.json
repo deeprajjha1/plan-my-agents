@@ -1,0 +1,422 @@
+{
+  "counts": {
+    "developing": 0,
+    "publishable": 0,
+    "smoke_test": 0,
+    "synthetic_only": 29
+  },
+  "generated_at": "2026-05-10",
+  "thresholds": {
+    "max_run_age_days": 30,
+    "min_real_providers": 3,
+    "min_sample_size": 30
+  },
+  "verdicts": [
+    {
+      "capability": "shipping_quote",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `shipping_quote` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 5,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "cross_border_commerce",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `cross_border_commerce` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 4,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "delivery_tracking",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `delivery_tracking` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 3,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "payment_authorization",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `payment_authorization` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 5,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "receipt_processing",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `receipt_processing` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 4,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "semantic_search",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `semantic_search` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 9,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "document_retrieval",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `document_retrieval` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 3,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "research_synthesis",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `research_synthesis` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 3,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "contact_enrichment",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `contact_enrichment` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 6,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "company_data_lookup",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `company_data_lookup` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 9,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "travel_search",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `travel_search` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 5,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "fare_comparison",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `fare_comparison` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 4,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "itinerary_planning",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `itinerary_planning` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 1,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "web_interaction",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `web_interaction` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 5,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "structured_extraction",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `structured_extraction` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 3,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "web_scraping",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `web_scraping` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 10,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "browser_automation",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `browser_automation` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 5,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "entity_extraction",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `entity_extraction` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 1,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "web_search",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `web_search` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 7,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "workflow_automation",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `workflow_automation` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 1,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "data_transformation",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `data_transformation` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 1,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "email_verification",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 2 ranking row(s) for `email_verification` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 2,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "flight_status_lookup",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `flight_status_lookup` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 1,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "lodging_search",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `lodging_search` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 3,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "lodging_comparison",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `lodging_comparison` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 3,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "booking_execution",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `booking_execution` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 4,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "web_fetch",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `web_fetch` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 1,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "database_query",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `database_query` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 1,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "structured_data_lookup",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `structured_data_lookup` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 1,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    }
+  ]
+}

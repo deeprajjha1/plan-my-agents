@@ -1,0 +1,19 @@
+{
+  "_comment": "Seed list of public MCP servers fed into the discovery MCP scout. Entries describe REAL third-party MCP servers — customer execution flows through the GenericMcpAdapter + BYO-credentials sandbox; we never hand-write a wrapper.",
+  "servers": [
+    {"name": "mcp-filesystem", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["file_search", "document_retrieval", "workflow_memory"]},
+    {"name": "mcp-github", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["code_search", "repository_lookup", "issue_tracking"]},
+    {"name": "mcp-gitlab", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["code_search", "repository_lookup", "issue_tracking"]},
+    {"name": "mcp-slack", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["team_messaging", "message_search", "workflow_notification"]},
+    {"name": "mcp-google-drive", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["document_retrieval", "file_search", "knowledge_base_lookup"]},
+    {"name": "mcp-postgres", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["database_query", "company_data_lookup", "structured_data_lookup"]},
+    {"name": "mcp-sqlite", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["database_query", "structured_data_lookup"]},
+    {"name": "mcp-puppeteer", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["web_scraping", "browser_automation", "web_interaction"]},
+    {"name": "mcp-playwright", "publisher": "Community MCP", "homepage": "https://github.com/microsoft/playwright-mcp", "tools": ["web_scraping", "browser_automation", "web_interaction"]},
+    {"name": "mcp-brave-search", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["semantic_search", "web_search"]},
+    {"name": "mcp-fetch", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["web_fetch", "web_scraping", "document_retrieval"]},
+    {"name": "mcp-memory", "publisher": "Model Context Protocol", "homepage": "https://github.com/modelcontextprotocol/servers", "tools": ["workflow_memory", "entity_memory"]},
+    {"name": "mcp-sentry", "publisher": "Sentry", "homepage": "https://sentry.io", "tools": ["error_monitoring", "incident_lookup", "workflow_notification"]},
+    {"name": "mcp-linear", "publisher": "Linear", "homepage": "https://linear.app", "tools": ["issue_tracking", "project_management", "workflow_notification"]}
+  ]
+}

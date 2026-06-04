@@ -1,0 +1,68 @@
+# Sprint-6 follow-up — apps/web cheap regression guards.
+#
+# Catches two specific classes of regression that the manual sprint
+# already burned engineering time on:
+#
+#   1. `next.config.mjs` losing the `allowedDevOrigins` allow-list.
+#      Under Next.js 16 this silently halts client-side hydration
+#      from any origin not on the list, leaving every "use client"
+#      component (the homepage <LiveEvidenceStrip />, the goal form,
+#      ...) in its server-rendered initial state forever — with no
+#      console errors. The Node-built-in test in
+#      `apps/web/tests/config/next-config.test.mjs` asserts the
+#      allow-list invariant in <100ms.
+#
+#   2. A TypeScript regression in any `apps/web/src/**` file. The
+#      `tsc --noEmit` pass takes ~2s warm and is the cheapest signal
+#      we have that a refactor didn't break the type contract between
+#      the API client (`lib/api.ts`), the page components, and the
+#      typed-routes table Next generates from the filesystem.
+#
+# Both checks are stdlib-only (no Playwright, no real backend), so
+# the workflow stays under 60s on the GitHub-hosted runners. The
+# heavier Playwright sweep + the Python test suite are out of scope
+# for this guard — they live in their own workflows (or, today, run
+# on the developer's machine via `make test` + `make web-e2e`).
+#
+# When this turns red: read the failing test output. The config test
+# names the specific origin missing from the allow-list; the
+# typecheck failure points at the file + line.
+
+name: web-checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  web-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: apps/web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Node 22 has `node --test` with the spec reporter we
+          # use in `package.json` → "test:config".
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Order matters: typecheck first because a TS error usually has
+      # a clearer fix than a config-test mismatch, and there's no
+      # point asserting allow-list invariants on a broken codebase.
+      - name: Typecheck (tsc --noEmit)
+        run: npm run typecheck
+
+      - name: Config invariants (next.config.mjs allow-list, etc.)
+        run: npm run test:config

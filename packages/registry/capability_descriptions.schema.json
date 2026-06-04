@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PlanMyAgents capability descriptions",
+  "description": "Per-capability human-readable descriptions shown to the goal decomposer LLM so it reuses router-supported slugs instead of coining synonyms. The decomposer receives the `capabilities` map verbatim as part of its catalog_hint.",
+  "type": "object",
+  "required": ["version", "updated_at", "capabilities"],
+  "additionalProperties": true,
+  "properties": {
+    "$schema": {"type": "string"},
+    "version": {"type": "string"},
+    "updated_at": {"type": "string"},
+    "notes": {"type": "string"},
+    "capabilities": {
+      "type": "object",
+      "description": "Map of capability slug -> description block. The slug MUST be a router-supported capability id from agents.json. The decomposer hot path looks up slugs in this map by exact string match.",
+      "patternProperties": {
+        "^[a-z][a-z0-9_]{2,63}$": {
+          "type": "object",
+          "required": ["description", "examples"],
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "One or two sentences describing what the capability does and (crucially) what it is NOT. The decomposer reads this to decide reuse vs. coining."
+            },
+            "examples": {
+              "type": "array",
+              "description": "Two to five concrete example sub-tasks that should map to this capability. Examples teach the LLM by analogy and are higher-signal than the description alone.",
+              "minItems": 2,
+              "items": {"type": "string", "minLength": 4}
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,129 @@
+# Sprint 3a (S3a-2): hand-authored benchmark cases for the
+# price_comparison capability (eBay Browse wrapper).
+#
+# Cases run against eBay's Sandbox API by default (test_mode=true).
+# The wrapper refuses production endpoints unless
+# EBAY_ALLOW_PRODUCTION=true is set, so a stray live token won't
+# accidentally hit the production rate limit.
+#
+# All queries are deliberately generic so the eBay sandbox returns
+# at least some test listings; the adversarial case uses a
+# deliberately-impossible query token to exercise the no_results
+# path. See: https://developer.ebay.com/api-docs/buy/browse/
+
+cases:
+  - id: price-comparison-0001-common-electronics
+    capability: price_comparison
+    difficulty: easy
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      query: wireless headphones
+      limit: 5
+    expected:
+      status:
+        accept: ["found"]
+        weight: 0.4
+      result_count:
+        min_score: 1
+        weight: 0.4
+      test_mode:
+        accept: [true]
+        weight: 0.2
+    notes: >
+      High-volume search. The wrapper must return at least one
+      listing and mark test_mode=true (sandbox endpoint).
+
+  - id: price-comparison-0002-min-price-presence
+    capability: price_comparison
+    difficulty: easy
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      query: laptop bag
+      limit: 5
+    expected:
+      status:
+        accept: ["found"]
+        weight: 0.3
+      min_price.price:
+        min_score: 0.01
+        weight: 0.4
+      max_price.price:
+        min_score: 0.01
+        weight: 0.3
+    notes: >
+      Verify the wrapper computes min_price and max_price locally
+      from the listing list. A wrapper that ships items without
+      computing aggregate prices fails both fields.
+
+  - id: price-comparison-0003-price-filter
+    capability: price_comparison
+    difficulty: medium
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      query: bluetooth speaker
+      limit: 10
+      min_price: 20
+      max_price: 100
+      currency: USD
+    expected:
+      status:
+        accept: ["found"]
+        weight: 0.5
+      result_count:
+        min_score: 1
+        weight: 0.5
+    notes: >
+      Verify price-filter inputs are propagated through to the
+      eBay query string. A wrapper that ignores min_price /
+      max_price still returns listings (lower quality, but not
+      broken) — this case grades the "still returns at least
+      one listing" path. The detailed price-filter correctness
+      is verified by the adapter-level unit tests.
+
+  - id: price-comparison-0004-condition-filter
+    capability: price_comparison
+    difficulty: medium
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      query: usb cable
+      limit: 5
+      condition: NEW
+    expected:
+      status:
+        accept: ["found"]
+        weight: 0.5
+      result_count:
+        min_score: 1
+        weight: 0.5
+    notes: >
+      Verify the wrapper passes a NEW condition filter through
+      to the eBay query. No grading at the listing-condition
+      level here (eBay's sandbox often returns mixed conditions
+      for low-volume queries) — that's adapter-test territory.
+
+  - id: price-comparison-0005-adversarial-no-results-honesty
+    capability: price_comparison
+    difficulty: adversarial
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      query: nothing-matches-this-very-unique-string-zzz
+      limit: 5
+    expected:
+      status:
+        accept: ["no_results"]
+        weight: 0.6
+      result_count:
+        equals: 0
+        weight: 0.4
+    notes: >
+      Adversarial: a wrapper that hallucinates listings for an
+      impossible query fails both checks. The honest wrapper
+      passes through eBay's empty itemSummaries array verbatim
+      and synthesises status="no_results". Catches the most
+      damaging price-comparison wrapper bug: fake listings
+      poisoning downstream price-comparison decisions.

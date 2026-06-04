@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  font-feature-settings: "ss01" on, "cv11" on;
+  font-variant-numeric: tabular-nums;
+}
+
+.tag {
+  @apply inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium;
+}
+.tag-success {
+  @apply tag border-green-200 bg-green-50 text-green-700;
+}
+.tag-warn {
+  @apply tag border-amber-200 bg-amber-50 text-amber-700;
+}
+.tag-danger {
+  @apply tag border-red-200 bg-red-50 text-red-700;
+}
+.tag-neutral {
+  @apply tag border-ink-200 bg-ink-50 text-ink-600;
+}
+.tag-info {
+  @apply tag border-blue-200 bg-blue-50 text-blue-700;
+}
+
+.surface {
+  @apply rounded-2xl border border-ink-200 bg-white shadow-sm;
+}
+.surface-muted {
+  @apply rounded-2xl border border-ink-200 bg-ink-50;
+}
+
+/* Step indicator used on the discovery progress strip. */
+.step-chip {
+  @apply flex flex-1 flex-col items-start gap-1 rounded-xl border border-ink-200 bg-white px-3 py-2.5;
+}
+.step-chip-active {
+  @apply border-accent-300 bg-accent-50;
+}
+.step-chip-done {
+  @apply border-green-200 bg-green-50;
+}
+.step-chip-blocked {
+  @apply border-amber-200 bg-amber-50;
+}

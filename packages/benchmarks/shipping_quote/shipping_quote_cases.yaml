@@ -1,0 +1,219 @@
+# Sprint 3a (S3a-2): hand-authored benchmark cases for the
+# shipping_quote capability (Shippo wrapper).
+#
+# Cases use Shippo's documented test addresses (their own SF HQ)
+# and synthetic destinations so a live test-token run never
+# books a real shipment. Wrapper enforces test-mode by default
+# and only allows live tokens with explicit opt-in.
+#
+# Shippo's POST /shipments/?async=false returns rates synchronously
+# from configured carrier accounts. For tests, Shippo provisions
+# every account with synthetic carriers (no real shipments).
+# See: https://docs.goshippo.com/shippoapi/public-api/#tag/Shipments
+
+cases:
+  - id: shipping-quote-0001-domestic-us-light-package
+    capability: shipping_quote
+    difficulty: easy
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      address_from:
+        name: PMA Bench Origin
+        street1: 731 Market St
+        city: San Francisco
+        state: CA
+        zip: "94103"
+        country: US
+      address_to:
+        name: PMA Bench Recipient
+        street1: 1 Infinite Loop
+        city: Cupertino
+        state: CA
+        zip: "95014"
+        country: US
+      parcel:
+        length: 10
+        width: 8
+        height: 4
+        weight: 2
+        distance_unit: in
+        mass_unit: lb
+    expected:
+      status:
+        accept: ["quoted"]
+        weight: 0.4
+      rate_count:
+        min_score: 1
+        weight: 0.4
+      test_mode:
+        accept: [true]
+        weight: 0.2
+    notes: >
+      Standard US-to-US 2lb package. Wrapper must return at least
+      one rate from a configured carrier and mark the response as
+      test mode (token starts with shippo_test_).
+
+  - id: shipping-quote-0002-domestic-us-heavy-package
+    capability: shipping_quote
+    difficulty: medium
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      address_from:
+        name: PMA Bench Origin
+        street1: 731 Market St
+        city: San Francisco
+        state: CA
+        zip: "94103"
+        country: US
+      address_to:
+        name: PMA Bench Recipient
+        street1: 350 5th Ave
+        city: New York
+        state: NY
+        zip: "10118"
+        country: US
+      parcel:
+        length: 24
+        width: 18
+        height: 12
+        weight: 25
+        distance_unit: in
+        mass_unit: lb
+    expected:
+      status:
+        accept: ["quoted"]
+        weight: 0.5
+      rate_count:
+        min_score: 1
+        weight: 0.5
+    notes: >
+      Heavy 25lb cross-country package. Verifies the wrapper
+      doesn't truncate, normalize, or reject larger parcels.
+
+  - id: shipping-quote-0003-international-us-to-india
+    capability: shipping_quote
+    difficulty: medium
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      address_from:
+        name: PMA Bench Origin
+        street1: 731 Market St
+        city: San Francisco
+        state: CA
+        zip: "94103"
+        country: US
+      address_to:
+        name: PMA Bench Bengaluru
+        street1: 100 Brigade Rd
+        city: Bengaluru
+        state: KA
+        zip: "560001"
+        country: IN
+      parcel:
+        length: 12
+        width: 9
+        height: 4
+        weight: 3
+        distance_unit: in
+        mass_unit: lb
+    expected:
+      status:
+        accept: ["quoted"]
+        weight: 0.5
+      destination_country:
+        equals: "IN"
+        weight: 0.5
+    notes: >
+      International shipment to a real Indian postal address. The
+      wrapper must propagate ``country: IN`` verbatim (catches
+      wrappers that drop non-US countries or default to US).
+
+  - id: shipping-quote-0004-cheapest-rate-selection
+    capability: shipping_quote
+    difficulty: hard
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      address_from:
+        name: PMA Bench Origin
+        street1: 731 Market St
+        city: San Francisco
+        state: CA
+        zip: "94103"
+        country: US
+      address_to:
+        name: PMA Bench Recipient
+        street1: 350 5th Ave
+        city: New York
+        state: NY
+        zip: "10118"
+        country: US
+      parcel:
+        length: 8
+        width: 6
+        height: 4
+        weight: 4
+        distance_unit: in
+        mass_unit: lb
+    expected:
+      status:
+        accept: ["quoted"]
+        weight: 0.3
+      cheapest_rate.amount:
+        min_score: 0.01
+        weight: 0.4
+      rate_count:
+        min_score: 2
+        weight: 0.3
+    notes: >
+      Verifies the wrapper actually computes the minimum across
+      all returned rates rather than returning a random / first
+      rate. The dotted-path field ``cheapest_rate.amount`` must
+      be > 0; a wrapper that fails to compute cheapest (or
+      returns null cheapest_rate) gets 0 for that field. Catches
+      wrappers that ship rates without selecting a winner.
+
+  - id: shipping-quote-0005-adversarial-rate-presence
+    capability: shipping_quote
+    difficulty: adversarial
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      address_from:
+        name: PMA Bench Origin
+        street1: 731 Market St
+        city: San Francisco
+        state: CA
+        zip: "94103"
+        country: US
+      address_to:
+        name: PMA Bench Recipient
+        street1: 1600 Amphitheatre Pkwy
+        city: Mountain View
+        state: CA
+        zip: "94043"
+        country: US
+      parcel:
+        length: 6
+        width: 4
+        height: 2
+        weight: 1
+        distance_unit: in
+        mass_unit: lb
+    expected:
+      status:
+        accept: ["quoted"]
+        weight: 0.4
+      rate_count:
+        min_score: 2
+        weight: 0.6
+    notes: >
+      Adversarial: requires AT LEAST 2 rates back so a wrapper
+      that returns zero rates with a hallucinated cheapest_rate
+      (or returns only one rate from a single-carrier
+      misconfiguration) fails the rate_count >= 2 check. The
+      honest wrapper returns multiple rates from Shippo's
+      synthetic test carriers (USPS / UPS / FedEx).

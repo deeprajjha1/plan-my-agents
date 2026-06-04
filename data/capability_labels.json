@@ -1,0 +1,122 @@
+[
+  {
+    "coined_at": "2026-05-15T13:08:46+00:00",
+    "coined_from_goal_hash": "d5031fe9dca63bf9",
+    "description": "Check the sender's account balance to ensure they have sufficient funds for the $42 payment.",
+    "id": "account_balance_check",
+    "last_used_at": "2026-05-15T13:27:19+00:00",
+    "usage_count": 6
+  },
+  {
+    "coined_at": "2026-05-15T13:03:23+00:00",
+    "coined_from_goal_hash": "2d22889116e86422",
+    "description": "Check the buyer's name against AML watchlists.",
+    "id": "aml_watchlist_screening",
+    "last_used_at": "2026-05-19T14:12:45+00:00",
+    "usage_count": 77
+  },
+  {
+    "coined_at": "2026-05-15T13:03:13+00:00",
+    "coined_from_goal_hash": "39ae0f967fe50599",
+    "description": "Search for liquor stores in southern India",
+    "id": "business_search",
+    "last_used_at": "2026-05-18T11:45:27+00:00",
+    "usage_count": 46
+  },
+  {
+    "coined_at": "2026-05-15T13:03:23+00:00",
+    "coined_from_goal_hash": "2d22889116e86422",
+    "description": "Retrieve and review the buyer's credit history.",
+    "id": "credit_history_report",
+    "last_used_at": "2026-05-15T13:03:41+00:00",
+    "usage_count": 3
+  },
+  {
+    "coined_at": "2026-05-15T13:09:09+00:00",
+    "coined_from_goal_hash": "0fc427bd313fe4c1",
+    "description": "Collect required customer identification documents",
+    "id": "document_collection",
+    "last_used_at": "2026-05-19T07:09:52+00:00",
+    "usage_count": 7
+  },
+  {
+    "coined_at": "2026-05-15T13:13:26+00:00",
+    "coined_from_goal_hash": "f4278da3be490374",
+    "description": "Geocode the liquor stores to get their locations",
+    "id": "geocoding",
+    "last_used_at": "2026-05-15T18:41:27+00:00",
+    "usage_count": 9
+  },
+  {
+    "coined_at": "2026-05-15T13:03:23+00:00",
+    "coined_from_goal_hash": "2d22889116e86422",
+    "description": "Verify the identity of the UAE retail buyer.",
+    "id": "identity_verification",
+    "last_used_at": "2026-05-19T14:12:45+00:00",
+    "usage_count": 88
+  },
+  {
+    "coined_at": "2026-05-15T13:03:23+00:00",
+    "coined_from_goal_hash": "2d22889116e86422",
+    "description": "Assess the risk level of the buyer based on KYC and AML data.",
+    "id": "kyc_aml_risk_assessment",
+    "last_used_at": "2026-05-19T14:12:45+00:00",
+    "usage_count": 86
+  },
+  {
+    "coined_at": "2026-05-15T13:13:05+00:00",
+    "coined_from_goal_hash": "d5031fe9dca63bf9",
+    "description": "Obtain payment method details for Stripe",
+    "id": "payment_method_details",
+    "last_used_at": "2026-05-19T14:12:55+00:00",
+    "usage_count": 51
+  },
+  {
+    "coined_at": "2026-05-15T13:03:19+00:00",
+    "coined_from_goal_hash": "9dcfc99a697a4f73",
+    "description": "Filter liquor stores to find ones that sell single malts",
+    "id": "product_availability_check",
+    "last_used_at": "2026-05-16T04:33:35+00:00",
+    "usage_count": 11
+  },
+  {
+    "coined_at": "2026-05-15T13:10:24+00:00",
+    "coined_from_goal_hash": "a59887843dfea416",
+    "description": "Search for online liquor retailers or physical stores in Tamil Nadu that stock Glenlivet whisky and compare their current prices to identify the cheapest option.",
+    "id": "product_price_comparison",
+    "last_used_at": "2026-05-16T04:02:35+00:00",
+    "usage_count": 38
+  },
+  {
+    "coined_at": "2026-05-15T13:03:34+00:00",
+    "coined_from_goal_hash": "4aaa4411fc8b774a",
+    "description": "Notify the customer about the successful charge for the premium subscription",
+    "id": "send_payment_confirmation",
+    "last_used_at": "2026-05-16T04:02:35+00:00",
+    "usage_count": 41
+  },
+  {
+    "coined_at": "2026-05-15T13:08:01+00:00",
+    "coined_from_goal_hash": "f87cc89aec5bfee3",
+    "description": "Analyze the translated Mandarin text (or original English text) to extract key financial metrics, strategic updates, and management commentary into a structured summary.",
+    "id": "text_summarization",
+    "last_used_at": "2026-05-19T16:53:35+00:00",
+    "usage_count": 58
+  },
+  {
+    "coined_at": "2026-05-15T13:08:01+00:00",
+    "coined_from_goal_hash": "f87cc89aec5bfee3",
+    "description": "Translate the provided earnings call text or transcript from English (or source language) into Mandarin Chinese.",
+    "id": "text_translation",
+    "last_used_at": "2026-05-15T18:43:51+00:00",
+    "usage_count": 8
+  },
+  {
+    "coined_at": "2026-05-15T13:03:23+00:00",
+    "coined_from_goal_hash": "2d22889116e86422",
+    "description": "Validate the buyer's address in the UAE.",
+    "id": "uae_address_validation",
+    "last_used_at": "2026-05-19T14:12:41+00:00",
+    "usage_count": 32
+  }
+]

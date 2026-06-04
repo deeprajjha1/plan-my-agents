@@ -1,0 +1,44 @@
+{
+  "counts": {
+    "developing": 0,
+    "publishable": 0,
+    "smoke_test": 0,
+    "synthetic_only": 2
+  },
+  "generated_at": "2026-05-30",
+  "thresholds": {
+    "max_run_age_days": 30,
+    "min_real_providers": 3,
+    "min_sample_size": 30
+  },
+  "verdicts": [
+    {
+      "capability": "contact_enrichment",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `contact_enrichment` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 1,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    },
+    {
+      "capability": "email_verification",
+      "last_real_run_at": "",
+      "max_real_sample_size": 0,
+      "real_provider_count": 0,
+      "reasons": [
+        "All 0 ranking row(s) for `email_verification` use synthetic adapters. The leaderboard scores our scoring code, not the vendors."
+      ],
+      "status": "synthetic_only",
+      "total_provider_count": 10,
+      "unblockers": [
+        "Add at least 3 real provider adapter(s) and run them via `make benchmark-schedule`."
+      ]
+    }
+  ]
+}

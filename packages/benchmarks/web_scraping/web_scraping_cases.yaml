@@ -1,0 +1,123 @@
+# Sprint 3a (S3a-2): hand-authored benchmark cases for the
+# web_scraping capability (Firecrawl wrapper).
+#
+# All cases use RFC-2606 / RFC-6761 reserved domains so a live
+# run never touches a real website. The wrapper detects test mode
+# from the host (example.com, *.test, *.invalid, *.localhost).
+#
+# Firecrawl's POST /v1/scrape returns markdown + metadata; the
+# wrapper-level success state is status="scraped" with
+# char_count > 0. See: https://docs.firecrawl.dev/api-reference/endpoint/scrape
+
+cases:
+  - id: web-scrape-0001-rfc-2606-example-com
+    capability: web_scraping
+    difficulty: easy
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      url: https://example.com
+    expected:
+      status:
+        accept: ["scraped"]
+        weight: 0.4
+      char_count:
+        min_score: 50
+        weight: 0.4
+      test_mode:
+        accept: [true]
+        weight: 0.2
+    notes: >
+      RFC-2606 reserved domain. Firecrawl returns a stable ~150
+      character "Example Domain" page. The case grades that the
+      wrapper produces ``status="scraped"``, captures non-empty
+      content (>= 50 chars), and correctly marks test_mode=true.
+
+  - id: web-scrape-0002-rfc-2606-example-org
+    capability: web_scraping
+    difficulty: easy
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      url: https://example.org
+    expected:
+      status:
+        accept: ["scraped"]
+        weight: 0.5
+      char_count:
+        min_score: 50
+        weight: 0.3
+      test_mode:
+        accept: [true]
+        weight: 0.2
+    notes: >
+      Verify the wrapper handles the .org variant of the reserved
+      example domains identically to the .com variant.
+
+  - id: web-scrape-0003-explicit-formats-and-options
+    capability: web_scraping
+    difficulty: medium
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      url: https://example.com
+      formats: [markdown, html]
+      only_main_content: true
+    expected:
+      status:
+        accept: ["scraped"]
+        weight: 0.4
+      html_present:
+        accept: [true]
+        weight: 0.3
+      char_count:
+        min_score: 50
+        weight: 0.3
+    notes: >
+      Verify multi-format requests round-trip. The wrapper sends
+      ``formats: [markdown, html]`` to Firecrawl; the response
+      should populate both, surfaced via ``html_present=true``.
+
+  - id: web-scrape-0004-localhost-test-mode-detection
+    capability: web_scraping
+    difficulty: medium
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      url: http://localhost.invalid/
+    expected:
+      status:
+        accept: ["scraped"]
+        weight: 0.5
+      test_mode:
+        accept: [true]
+        weight: 0.5
+    notes: >
+      RFC-6761 ``.invalid`` TLD is non-routable on the public
+      internet. The wrapper must detect test mode via the
+      reserved-suffix list (catches a broader class of safe URLs
+      than just example.com).
+
+  - id: web-scrape-0005-adversarial-empty-page-honesty
+    capability: web_scraping
+    difficulty: adversarial
+    created_at: 2026-05-15
+    created_by: founder
+    inputs:
+      url: https://example.com/empty
+    expected:
+      status:
+        accept: ["scraped"]
+        weight: 0.5
+      char_count:
+        equals: 0
+        weight: 0.5
+    notes: >
+      Adversarial: a wrapper that hallucinates content for a
+      page that returned empty markdown will fail the
+      char_count==0 check. The honest wrapper passes the empty
+      string through verbatim so downstream agents see "we
+      scraped, but the page was empty" — distinct from "we
+      scraped, here's content". Catches the most insidious
+      web-scraping wrapper bug: claiming false content for blocked
+      / empty / login-walled pages.

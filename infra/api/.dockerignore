@@ -1,0 +1,13 @@
+.git
+.venv
+.planmyagents_runs
+__pycache__
+*.pyc
+.pytest_cache
+node_modules
+apps/web
+.env
+.env.*
+.next
+docs
+*.md
